@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2016 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -51,7 +51,6 @@ def register_handle(handle, base_object):
 };
 
 /* typedefs */
-typedef std::map<double , std::vector <const SMDS_MeshNode *>> StdMeshers_IJNodeMap;
 typedef std::map<TNode , TNodeColumn> TNode2ColumnMap;
 typedef std::map<double , TNodeColumn> TParam2ColumnMap;
 typedef TopTools_IndexedMapOfOrientedShape TBlockShapes;
@@ -148,6 +147,11 @@ class StdMeshers_Arithmetic1D : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_Arithmetic1D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_AutomaticLength;
 class StdMeshers_AutomaticLength : public SMESH_Hypothesis {
 	public:
@@ -230,6 +234,11 @@ class StdMeshers_AutomaticLength : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_AutomaticLength {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_CompositeHexa_3D;
 class StdMeshers_CompositeHexa_3D : public SMESH_3D_Algo {
 	public:
@@ -264,6 +273,11 @@ class StdMeshers_CompositeHexa_3D : public SMESH_3D_Algo {
 };
 
 
+%extend StdMeshers_CompositeHexa_3D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_Deflection1D;
 class StdMeshers_Deflection1D : public SMESH_Hypothesis {
 	public:
@@ -322,6 +336,11 @@ class StdMeshers_Deflection1D : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_Deflection1D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_FaceSide;
 class StdMeshers_FaceSide {
 	public:
@@ -534,6 +553,11 @@ class StdMeshers_FaceSide {
 };
 
 
+%extend StdMeshers_FaceSide {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_FixedPoints1D;
 class StdMeshers_FixedPoints1D : public SMESH_Hypothesis {
 	public:
@@ -622,6 +646,11 @@ class StdMeshers_FixedPoints1D : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_FixedPoints1D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_Hexa_3D;
 class StdMeshers_Hexa_3D : public SMESH_3D_Algo {
 	public:
@@ -666,6 +695,11 @@ class StdMeshers_Hexa_3D : public SMESH_3D_Algo {
 };
 
 
+%extend StdMeshers_Hexa_3D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_LayerDistribution;
 class StdMeshers_LayerDistribution : public SMESH_Hypothesis {
 	public:
@@ -728,6 +762,11 @@ class StdMeshers_LayerDistribution : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_LayerDistribution {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_LengthFromEdges;
 class StdMeshers_LengthFromEdges : public SMESH_Hypothesis {
 	public:
@@ -786,6 +825,11 @@ class StdMeshers_LengthFromEdges : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_LengthFromEdges {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_LocalLength;
 class StdMeshers_LocalLength : public SMESH_Hypothesis {
 	public:
@@ -854,9 +898,16 @@ class StdMeshers_LocalLength : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_LocalLength {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_MEFISTO_2D;
 class StdMeshers_MEFISTO_2D : public SMESH_2D_Algo {
 	public:
+typedef boost::shared_ptr<StdMeshers_FaceSide> StdMeshers_FaceSidePtr;
+typedef std::vector<StdMeshers_FaceSidePtr> TWireVector;
 		%feature("compactdefaultargs") StdMeshers_MEFISTO_2D;
 		%feature("autodoc", "	:param hypId:
 	:type hypId: int
@@ -942,6 +993,11 @@ class StdMeshers_MEFISTO_2D : public SMESH_2D_Algo {
 };
 
 
+%extend StdMeshers_MEFISTO_2D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_MaxElementArea;
 class StdMeshers_MaxElementArea : public SMESH_Hypothesis {
 	public:
@@ -1000,6 +1056,11 @@ class StdMeshers_MaxElementArea : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_MaxElementArea {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_MaxElementVolume;
 class StdMeshers_MaxElementVolume : public SMESH_Hypothesis {
 	public:
@@ -1058,6 +1119,11 @@ class StdMeshers_MaxElementVolume : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_MaxElementVolume {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_MaxLength;
 class StdMeshers_MaxLength : public SMESH_Hypothesis {
 	public:
@@ -1140,6 +1206,11 @@ class StdMeshers_MaxLength : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_MaxLength {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_NotConformAllowed;
 class StdMeshers_NotConformAllowed : public SMESH_Hypothesis {
 	public:
@@ -1188,6 +1259,11 @@ class StdMeshers_NotConformAllowed : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_NotConformAllowed {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_NumberOfLayers;
 class StdMeshers_NumberOfLayers : public SMESH_Hypothesis {
 	public:
@@ -1246,8 +1322,14 @@ class StdMeshers_NumberOfLayers : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_NumberOfLayers {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_NumberOfSegments;
 class StdMeshers_NumberOfSegments : public SMESH_Hypothesis {
+	public:
 /* public enums */
 enum DistrType {
 	DT_Regular = 0,
@@ -1258,7 +1340,6 @@ enum DistrType {
 
 /* end public enums declaration */
 
-	public:
 		%feature("compactdefaultargs") StdMeshers_NumberOfSegments;
 		%feature("autodoc", "	:param hypId:
 	:type hypId: int
@@ -1420,64 +1501,11 @@ enum DistrType {
 };
 
 
-%nodefaultctor StdMeshers_Penta_3D;
-class StdMeshers_Penta_3D {
-	public:
-		%feature("compactdefaultargs") StdMeshers_Penta_3D;
-		%feature("autodoc", "	:rtype: None
-") StdMeshers_Penta_3D;
-		 StdMeshers_Penta_3D ();
-		%feature("compactdefaultargs") Compute;
-		%feature("autodoc", "	:param &:
-	:type &: SMESH_Mesh
-	:param &:
-	:type &: TopoDS_Shape
-	:rtype: bool
-") Compute;
-		bool Compute (SMESH_Mesh &,const TopoDS_Shape &);
-		%feature("compactdefaultargs") ErrorStatus;
-		%feature("autodoc", "	:rtype: int
-") ErrorStatus;
-		int ErrorStatus ();
-		%feature("compactdefaultargs") GetComputeError;
-		%feature("autodoc", "	:rtype: SMESH_ComputeErrorPtr
-") GetComputeError;
-		SMESH_ComputeErrorPtr GetComputeError ();
-		%feature("compactdefaultargs") SetTolerance;
-		%feature("autodoc", "	:param theTol3D:
-	:type theTol3D: double
-	:rtype: None
-") SetTolerance;
-		void SetTolerance (const double theTol3D);
-		%feature("compactdefaultargs") Tolerance;
-		%feature("autodoc", "	:rtype: double
-") Tolerance;
-		double Tolerance ();
-		%feature("compactdefaultargs") LoadIJNodes;
-		%feature("autodoc", "	:param theIJNodes:
-	:type theIJNodes: StdMeshers_IJNodeMap &
-	:param theFace:
-	:type theFace: TopoDS_Face &
-	:param theBaseEdge:
-	:type theBaseEdge: TopoDS_Edge &
-	:param theMesh:
-	:type theMesh: SMESHDS_Mesh *
-	:rtype: bool
-") LoadIJNodes;
-		bool LoadIJNodes (StdMeshers_IJNodeMap & theIJNodes,const TopoDS_Face & theFace,const TopoDS_Edge & theBaseEdge,SMESHDS_Mesh * theMesh);
-		%feature("compactdefaultargs") Evaluate;
-		%feature("autodoc", "	:param aMesh:
-	:type aMesh: SMESH_Mesh &
-	:param aShape:
-	:type aShape: TopoDS_Shape &
-	:param aResMap:
-	:type aResMap: MapShapeNbElems &
-	:rtype: bool
-") Evaluate;
-		bool Evaluate (SMESH_Mesh & aMesh,const TopoDS_Shape & aShape,MapShapeNbElems & aResMap);
+%extend StdMeshers_NumberOfSegments {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
 };
-
-
 %nodefaultctor StdMeshers_PrismAsBlock;
 class StdMeshers_PrismAsBlock : public SMESH_Block {
 	public:
@@ -1608,6 +1636,11 @@ class StdMeshers_PrismAsBlock : public SMESH_Block {
 };
 
 
+%extend StdMeshers_PrismAsBlock {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_Prism_3D;
 class StdMeshers_Prism_3D : public SMESH_3D_Algo {
 	public:
@@ -1668,6 +1701,11 @@ class StdMeshers_Prism_3D : public SMESH_3D_Algo {
 };
 
 
+%extend StdMeshers_Prism_3D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_ProjectionSource1D;
 class StdMeshers_ProjectionSource1D : public SMESH_Hypothesis {
 	public:
@@ -1804,6 +1842,11 @@ class StdMeshers_ProjectionSource1D : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_ProjectionSource1D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_ProjectionSource2D;
 class StdMeshers_ProjectionSource2D : public SMESH_Hypothesis {
 	public:
@@ -1956,6 +1999,11 @@ class StdMeshers_ProjectionSource2D : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_ProjectionSource2D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_ProjectionSource3D;
 class StdMeshers_ProjectionSource3D : public SMESH_Hypothesis {
 	public:
@@ -2102,9 +2150,17 @@ class StdMeshers_ProjectionSource3D : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_ProjectionSource3D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_ProjectionUtils;
 class StdMeshers_ProjectionUtils {
 	public:
+typedef TopTools_DataMapOfShapeShape TShapeShapeMap;
+typedef TopTools_IndexedDataMapOfShapeListOfShape TAncestorMap;
+typedef std::map <const SMDS_MeshNode * , const SMDS_MeshNode *> TNodeNodeMap;
 		%feature("compactdefaultargs") FindSubShapeAssociation;
 		%feature("autodoc", "	* /*! * \brief Looks for association of all subshapes of two shapes * \param theShape1 - shape 1 * \param theMesh1 - mesh built on shape 1 * \param theShape2 - shape 2 * \param theMesh2 - mesh built on shape 2 * \param theAssociation - association map to be filled that may *  contain association of one or two pairs of vertices * etval bool - true if association found */
 
@@ -2294,6 +2350,11 @@ class StdMeshers_ProjectionUtils {
 };
 
 
+%extend StdMeshers_ProjectionUtils {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_Projection_1D;
 class StdMeshers_Projection_1D : public SMESH_1D_Algo {
 	public:
@@ -2346,6 +2407,11 @@ class StdMeshers_Projection_1D : public SMESH_1D_Algo {
 };
 
 
+%extend StdMeshers_Projection_1D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_Projection_2D;
 class StdMeshers_Projection_2D : public SMESH_2D_Algo {
 	public:
@@ -2398,6 +2464,11 @@ class StdMeshers_Projection_2D : public SMESH_2D_Algo {
 };
 
 
+%extend StdMeshers_Projection_2D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_Projection_3D;
 class StdMeshers_Projection_3D : public SMESH_3D_Algo {
 	public:
@@ -2450,6 +2521,11 @@ class StdMeshers_Projection_3D : public SMESH_3D_Algo {
 };
 
 
+%extend StdMeshers_Projection_3D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_Propagation;
 class StdMeshers_Propagation : public SMESH_Hypothesis {
 	public:
@@ -2520,6 +2596,11 @@ class StdMeshers_Propagation : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_Propagation {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_QuadToTriaAdaptor;
 class StdMeshers_QuadToTriaAdaptor {
 	public:
@@ -2550,6 +2631,11 @@ class StdMeshers_QuadToTriaAdaptor {
 };
 
 
+%extend StdMeshers_QuadToTriaAdaptor {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_QuadrangleParams;
 class StdMeshers_QuadrangleParams : public SMESH_Hypothesis {
 	public:
@@ -2618,6 +2704,11 @@ class StdMeshers_QuadrangleParams : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_QuadrangleParams {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_QuadranglePreference;
 class StdMeshers_QuadranglePreference : public SMESH_Hypothesis {
 	public:
@@ -2666,6 +2757,11 @@ class StdMeshers_QuadranglePreference : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_QuadranglePreference {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_Quadrangle_2D;
 class StdMeshers_Quadrangle_2D : public SMESH_2D_Algo {
 	public:
@@ -2720,6 +2816,11 @@ class StdMeshers_Quadrangle_2D : public SMESH_2D_Algo {
 };
 
 
+%extend StdMeshers_Quadrangle_2D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_QuadraticMesh;
 class StdMeshers_QuadraticMesh : public SMESH_Hypothesis {
 	public:
@@ -2768,6 +2869,11 @@ class StdMeshers_QuadraticMesh : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_QuadraticMesh {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_RadialPrism_3D;
 class StdMeshers_RadialPrism_3D : public SMESH_3D_Algo {
 	public:
@@ -2812,6 +2918,11 @@ class StdMeshers_RadialPrism_3D : public SMESH_3D_Algo {
 };
 
 
+%extend StdMeshers_RadialPrism_3D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_RadialQuadrangle_1D2D;
 class StdMeshers_RadialQuadrangle_1D2D : public SMESH_2D_Algo {
 	public:
@@ -2864,6 +2975,11 @@ class StdMeshers_RadialQuadrangle_1D2D : public SMESH_2D_Algo {
 };
 
 
+%extend StdMeshers_RadialQuadrangle_1D2D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_Regular_1D;
 class StdMeshers_Regular_1D : public SMESH_1D_Algo {
 	public:
@@ -2934,108 +3050,11 @@ class StdMeshers_Regular_1D : public SMESH_1D_Algo {
 };
 
 
-%nodefaultctor StdMeshers_SMESHBlock;
-class StdMeshers_SMESHBlock {
-	public:
-		%feature("compactdefaultargs") StdMeshers_SMESHBlock;
-		%feature("autodoc", "	:rtype: None
-") StdMeshers_SMESHBlock;
-		 StdMeshers_SMESHBlock ();
-		%feature("compactdefaultargs") Load;
-		%feature("autodoc", "	:param theShell:
-	:type theShell: TopoDS_Shell &
-	:rtype: None
-") Load;
-		void Load (const TopoDS_Shell & theShell);
-		%feature("compactdefaultargs") Load;
-		%feature("autodoc", "	:param theShell:
-	:type theShell: TopoDS_Shell &
-	:param theV000:
-	:type theV000: TopoDS_Vertex &
-	:param theV001:
-	:type theV001: TopoDS_Vertex &
-	:rtype: None
-") Load;
-		void Load (const TopoDS_Shell & theShell,const TopoDS_Vertex & theV000,const TopoDS_Vertex & theV001);
-		%feature("compactdefaultargs") ComputeParameters;
-		%feature("autodoc", "	:param thePnt:
-	:type thePnt: gp_Pnt
-	:param theXYZ:
-	:type theXYZ: gp_XYZ
-	:rtype: None
-") ComputeParameters;
-		void ComputeParameters (const gp_Pnt & thePnt,gp_XYZ & theXYZ);
-		%feature("compactdefaultargs") ComputeParameters;
-		%feature("autodoc", "	:param thePnt:
-	:type thePnt: gp_Pnt
-	:param theShape:
-	:type theShape: TopoDS_Shape &
-	:param theXYZ:
-	:type theXYZ: gp_XYZ
-	:rtype: None
-") ComputeParameters;
-		void ComputeParameters (const gp_Pnt & thePnt,const TopoDS_Shape & theShape,gp_XYZ & theXYZ);
-		%feature("compactdefaultargs") ComputeParameters;
-		%feature("autodoc", "	:param theU:
-	:type theU: double &
-	:param theShape:
-	:type theShape: TopoDS_Shape &
-	:param theXYZ:
-	:type theXYZ: gp_XYZ
-	:rtype: None
-") ComputeParameters;
-		void ComputeParameters (const double & theU,const TopoDS_Shape & theShape,gp_XYZ & theXYZ);
-		%feature("compactdefaultargs") Point;
-		%feature("autodoc", "	:param theParams:
-	:type theParams: gp_XYZ
-	:param thePnt:
-	:type thePnt: gp_Pnt
-	:rtype: None
-") Point;
-		void Point (const gp_XYZ & theParams,gp_Pnt & thePnt);
-		%feature("compactdefaultargs") Point;
-		%feature("autodoc", "	:param theParams:
-	:type theParams: gp_XYZ
-	:param theShape:
-	:type theShape: TopoDS_Shape &
-	:param thePnt:
-	:type thePnt: gp_Pnt
-	:rtype: None
-") Point;
-		void Point (const gp_XYZ & theParams,const TopoDS_Shape & theShape,gp_Pnt & thePnt);
-		%feature("compactdefaultargs") ShapeID;
-		%feature("autodoc", "	:param theShape:
-	:type theShape: TopoDS_Shape &
-	:rtype: int
-") ShapeID;
-		int ShapeID (const TopoDS_Shape & theShape);
-		%feature("compactdefaultargs") Shape;
-		%feature("autodoc", "	:param theID:
-	:type theID: int
-	:rtype: TopoDS_Shape
-") Shape;
-		const TopoDS_Shape  Shape (const int theID);
-		%feature("compactdefaultargs") Block;
-		%feature("autodoc", "	:rtype: SMESH_Block
-") Block;
-		SMESH_Block & Block ();
-		%feature("compactdefaultargs") IsForwadEdge;
-		%feature("autodoc", "	:param theEdgeID:
-	:type theEdgeID: int
-	:rtype: bool
-") IsForwadEdge;
-		bool IsForwadEdge (const int theEdgeID);
-		%feature("compactdefaultargs") ErrorStatus;
-		%feature("autodoc", "	:rtype: int
-") ErrorStatus;
-		int ErrorStatus ();
-		%feature("compactdefaultargs") GetError;
-		%feature("autodoc", "	:rtype: SMESH_ComputeErrorPtr
-") GetError;
-		SMESH_ComputeErrorPtr GetError ();
+%extend StdMeshers_Regular_1D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
 };
-
-
 %nodefaultctor StdMeshers_SegmentAroundVertex_0D;
 class StdMeshers_SegmentAroundVertex_0D : public SMESH_0D_Algo {
 	public:
@@ -3080,6 +3099,11 @@ class StdMeshers_SegmentAroundVertex_0D : public SMESH_0D_Algo {
 };
 
 
+%extend StdMeshers_SegmentAroundVertex_0D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_SegmentLengthAroundVertex;
 class StdMeshers_SegmentLengthAroundVertex : public SMESH_Hypothesis {
 	public:
@@ -3138,6 +3162,11 @@ class StdMeshers_SegmentLengthAroundVertex : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_SegmentLengthAroundVertex {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_StartEndLength;
 class StdMeshers_StartEndLength : public SMESH_Hypothesis {
 	public:
@@ -3220,56 +3249,11 @@ class StdMeshers_StartEndLength : public SMESH_Hypothesis {
 };
 
 
-%nodefaultctor StdMeshers_TNode;
-class StdMeshers_TNode {
-	public:
-		%feature("compactdefaultargs") StdMeshers_TNode;
-		%feature("autodoc", "	:rtype: None
-") StdMeshers_TNode;
-		 StdMeshers_TNode ();
-		%feature("compactdefaultargs") SetNode;
-		%feature("autodoc", "	:param theNode:
-	:type theNode: SMDS_MeshNode *
-	:rtype: None
-") SetNode;
-		void SetNode (const SMDS_MeshNode * theNode);
-		%feature("compactdefaultargs") Node;
-		%feature("autodoc", "	:rtype: SMDS_MeshNode *
-") Node;
-		const SMDS_MeshNode * Node ();
-		%feature("compactdefaultargs") SetShapeSupportID;
-		%feature("autodoc", "	:param theID:
-	:type theID: int
-	:rtype: None
-") SetShapeSupportID;
-		void SetShapeSupportID (const int theID);
-		%feature("compactdefaultargs") ShapeSupportID;
-		%feature("autodoc", "	:rtype: int
-") ShapeSupportID;
-		int ShapeSupportID ();
-		%feature("compactdefaultargs") SetNormCoord;
-		%feature("autodoc", "	:param theXYZ:
-	:type theXYZ: gp_XYZ
-	:rtype: None
-") SetNormCoord;
-		void SetNormCoord (const gp_XYZ & theXYZ);
-		%feature("compactdefaultargs") NormCoord;
-		%feature("autodoc", "	:rtype: gp_XYZ
-") NormCoord;
-		const gp_XYZ  NormCoord ();
-		%feature("compactdefaultargs") SetBaseNodeID;
-		%feature("autodoc", "	:param theID:
-	:type theID: int
-	:rtype: None
-") SetBaseNodeID;
-		void SetBaseNodeID (const int theID);
-		%feature("compactdefaultargs") BaseNodeID;
-		%feature("autodoc", "	:rtype: int
-") BaseNodeID;
-		int BaseNodeID ();
+%extend StdMeshers_StartEndLength {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
 };
-
-
 %nodefaultctor StdMeshers_TrianglePreference;
 class StdMeshers_TrianglePreference : public SMESH_Hypothesis {
 	public:
@@ -3318,6 +3302,11 @@ class StdMeshers_TrianglePreference : public SMESH_Hypothesis {
 };
 
 
+%extend StdMeshers_TrianglePreference {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_UseExisting_1D;
 class StdMeshers_UseExisting_1D : public SMESH_1D_Algo {
 	public:
@@ -3362,6 +3351,11 @@ class StdMeshers_UseExisting_1D : public SMESH_1D_Algo {
 };
 
 
+%extend StdMeshers_UseExisting_1D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_UseExisting_2D;
 class StdMeshers_UseExisting_2D : public SMESH_2D_Algo {
 	public:
@@ -3406,6 +3400,11 @@ class StdMeshers_UseExisting_2D : public SMESH_2D_Algo {
 };
 
 
+%extend StdMeshers_UseExisting_2D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_LayerDistribution2D;
 class StdMeshers_LayerDistribution2D : public StdMeshers_LayerDistribution {
 	public:
@@ -3422,6 +3421,11 @@ class StdMeshers_LayerDistribution2D : public StdMeshers_LayerDistribution {
 };
 
 
+%extend StdMeshers_LayerDistribution2D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor StdMeshers_NumberOfLayers2D;
 class StdMeshers_NumberOfLayers2D : public StdMeshers_NumberOfLayers {
 	public:
@@ -3438,3 +3442,8 @@ class StdMeshers_NumberOfLayers2D : public StdMeshers_NumberOfLayers {
 };
 
 
+%extend StdMeshers_NumberOfLayers2D {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};

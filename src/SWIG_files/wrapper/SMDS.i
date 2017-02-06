@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2016 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -51,28 +51,20 @@ def register_handle(handle, base_object):
 };
 
 /* typedefs */
-typedef SMDS_SetIterator<SMDS_pElement , std::vector<SMDS_pNode>::const_iterator> SMDS_NodeVectorElemIterator;
-typedef const SMDS_MeshNode * SMDS_pNode;
-typedef boost::shared_ptr <SMDS_Iterator <const SMDS_MeshNode *>> SMDS_NodeIteratorPtr;
+typedef boost::shared_ptr <SMDS_Iterator <const SMDS_MeshEdge *>> SMDS_EdgeIteratorPtr;
 typedef SMDS_Iterator <const SMDS_MeshFace *> SMDS_FaceIterator;
 typedef boost::shared_ptr <SMDS_Position> SMDS_PositionPtr;
-typedef SMDS_Iterator <const SMDS_MeshVolume *> SMDS_VolumeIterator;
-typedef boost::shared_ptr <SMDS_Iterator <const SMDS_MeshFace *>> SMDS_FaceIteratorPtr;
-typedef boost::shared_ptr <SMDS_Iterator <const SMDS_MeshVolume *>> SMDS_VolumeIteratorPtr;
-typedef SMDS_Iterator <const SMDS_MeshEdge *> SMDS_EdgeIterator;
-typedef SMDS_SetIterator<SMDS_pElement , SMDS_pElement const *> SMDS_ElementArrayIterator;
-typedef boost::shared_ptr <SMDS_Iterator <const SMDS_MeshEdge *>> SMDS_EdgeIteratorPtr;
-typedef SMDS_Iterator <const SMDS_MeshElement *> SMDS_ElemIterator;
-typedef const SMDS_MeshElement * SMDS_pElement;
-typedef SMDS_Iterator <const SMDS_Mesh0DElement *> SMDS_0DElementIterator;
-typedef boost::shared_ptr <SMDS_Iterator <const SMDS_Mesh0DElement *>> SMDS_0DElementIteratorPtr;
 typedef SMDS_Iterator <const SMDS_MeshNode *> SMDS_NodeIterator;
 typedef NCollection_DataMap <int , SMDS_MeshElement *> SMDS_IdElementMap;
-typedef SMDS_SetIterator<SMDS_pElement , SMDS_pNode const *> SMDS_NodeArrayElemIterator;
-typedef SMDS_SetIterator<SMDS_pElement , std::vector<SMDS_pElement>::const_iterator> SMDS_ElementVectorIterator;
-typedef SMDS_SetIterator<SMDS_pNode , SMDS_pNode const *> SMDS_NodeArrayIterator;
+typedef boost::shared_ptr <SMDS_Iterator <const SMDS_MeshFace *>> SMDS_FaceIteratorPtr;
+typedef SMDS_Iterator <const SMDS_Mesh0DElement *> SMDS_0DElementIterator;
+typedef SMDS_Iterator <const SMDS_MeshVolume *> SMDS_VolumeIterator;
+typedef SMDS_Iterator <const SMDS_MeshEdge *> SMDS_EdgeIterator;
 typedef boost::shared_ptr <SMDS_Iterator <const SMDS_MeshElement *>> SMDS_ElemIteratorPtr;
-typedef SMDS_SetIterator<SMDS_pNode , std::vector<SMDS_pNode>::const_iterator> SMDS_NodeVectorIterator;
+typedef boost::shared_ptr <SMDS_Iterator <const SMDS_MeshNode *>> SMDS_NodeIteratorPtr;
+typedef boost::shared_ptr <SMDS_Iterator <const SMDS_Mesh0DElement *>> SMDS_0DElementIteratorPtr;
+typedef SMDS_Iterator <const SMDS_MeshElement *> SMDS_ElemIterator;
+typedef boost::shared_ptr <SMDS_Iterator <const SMDS_MeshVolume *>> SMDS_VolumeIteratorPtr;
 /* end typedefs declaration */
 
 /* public enums */
@@ -118,6 +110,11 @@ class SMDS_EdgePosition : public SMDS_Position {
 };
 
 
+%extend SMDS_EdgePosition {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_FacePosition;
 class SMDS_FacePosition : public SMDS_Position {
 	public:
@@ -162,6 +159,11 @@ class SMDS_FacePosition : public SMDS_Position {
 };
 
 
+%extend SMDS_FacePosition {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_IteratorOfElements;
 class SMDS_IteratorOfElements : public SMDS_ElemIterator {
 	public:
@@ -188,9 +190,19 @@ class SMDS_IteratorOfElements : public SMDS_ElemIterator {
 };
 
 
+%extend SMDS_IteratorOfElements {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_Mesh;
 class SMDS_Mesh : public SMDS_MeshObject {
 	public:
+typedef NCollection_Map <SMDS_MeshNode *> SetOfNodes;
+typedef NCollection_Map <SMDS_Mesh0DElement *> SetOf0DElements;
+typedef NCollection_Map <SMDS_MeshEdge *> SetOfEdges;
+typedef NCollection_Map <SMDS_MeshFace *> SetOfFaces;
+typedef NCollection_Map <SMDS_MeshVolume *> SetOfVolumes;
 		%feature("compactdefaultargs") SMDS_Mesh;
 		%feature("autodoc", "	:rtype: None
 ") SMDS_Mesh;
@@ -1728,6 +1740,11 @@ class SMDS_Mesh : public SMDS_MeshObject {
 };
 
 
+%extend SMDS_Mesh {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_MeshElement;
 class SMDS_MeshElement : public SMDS_MeshObject {
 	public:
@@ -1834,6 +1851,11 @@ class SMDS_MeshElement : public SMDS_MeshObject {
 };
 
 
+%extend SMDS_MeshElement {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_MeshGroup;
 class SMDS_MeshGroup : public SMDS_MeshObject {
 	public:
@@ -1936,6 +1958,11 @@ class SMDS_MeshGroup : public SMDS_MeshObject {
 };
 
 
+%extend SMDS_MeshGroup {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_MeshIDFactory;
 class SMDS_MeshIDFactory : public SMDS_MeshObject {
 	public:
@@ -1956,42 +1983,11 @@ class SMDS_MeshIDFactory : public SMDS_MeshObject {
 };
 
 
-%nodefaultctor SMDS_SetIterator;
-class SMDS_SetIterator : public SMDS_Iterator<VALUE> {
-	public:
-		%feature("compactdefaultargs") SMDS_SetIterator;
-		%feature("autodoc", "	:param begin:
-	:type begin: VALUE_SET_ITERATOR &
-	:param end:
-	:type end: VALUE_SET_ITERATOR &
-	:rtype: None
-") SMDS_SetIterator;
-		 SMDS_SetIterator (const VALUE_SET_ITERATOR & begin,const VALUE_SET_ITERATOR & end);
-		%feature("compactdefaultargs") init;
-		%feature("autodoc", "	* /// Initialization
-
-	:param begin:
-	:type begin: VALUE_SET_ITERATOR &
-	:param end:
-	:type end: VALUE_SET_ITERATOR &
-	:rtype: None
-") init;
-		void init (const VALUE_SET_ITERATOR & begin,const VALUE_SET_ITERATOR & end);
-		%feature("compactdefaultargs") more;
-		%feature("autodoc", "	* /// Return true if and only if there are other object in this iterator
-
-	:rtype: bool
-") more;
-		bool more ();
-		%feature("compactdefaultargs") next;
-		%feature("autodoc", "	* /// Return the current object and step to the next one
-
-	:rtype: VALUE
-") next;
-		VALUE next ();
+%extend SMDS_MeshIDFactory {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
 };
-
-
 %nodefaultctor SMDS_SpacePosition;
 class SMDS_SpacePosition : public SMDS_Position {
 	public:
@@ -2016,6 +2012,11 @@ class SMDS_SpacePosition : public SMDS_Position {
 };
 
 
+%extend SMDS_SpacePosition {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_VertexPosition;
 class SMDS_VertexPosition : public SMDS_Position {
 	public:
@@ -2036,6 +2037,11 @@ class SMDS_VertexPosition : public SMDS_Position {
 };
 
 
+%extend SMDS_VertexPosition {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_Mesh0DElement;
 class SMDS_Mesh0DElement : public SMDS_MeshElement {
 	public:
@@ -2084,6 +2090,11 @@ class SMDS_Mesh0DElement : public SMDS_MeshElement {
 };
 
 
+%extend SMDS_Mesh0DElement {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_MeshEdge;
 class SMDS_MeshEdge : public SMDS_MeshElement {
 	public:
@@ -2136,6 +2147,11 @@ class SMDS_MeshEdge : public SMDS_MeshElement {
 };
 
 
+%extend SMDS_MeshEdge {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_MeshElementIDFactory;
 class SMDS_MeshElementIDFactory : public SMDS_MeshIDFactory {
 	public:
@@ -2186,6 +2202,11 @@ class SMDS_MeshElementIDFactory : public SMDS_MeshIDFactory {
 };
 
 
+%extend SMDS_MeshElementIDFactory {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_MeshFace;
 class SMDS_MeshFace : public SMDS_MeshElement {
 	public:
@@ -2196,6 +2217,11 @@ class SMDS_MeshFace : public SMDS_MeshElement {
 };
 
 
+%extend SMDS_MeshFace {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_MeshNode;
 class SMDS_MeshNode : public SMDS_MeshElement {
 	public:
@@ -2302,6 +2328,11 @@ class SMDS_MeshNode : public SMDS_MeshElement {
 };
 
 
+%extend SMDS_MeshNode {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_MeshVolume;
 class SMDS_MeshVolume : public SMDS_MeshElement {
 	public:
@@ -2312,6 +2343,11 @@ class SMDS_MeshVolume : public SMDS_MeshElement {
 };
 
 
+%extend SMDS_MeshVolume {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_FaceOfEdges;
 class SMDS_FaceOfEdges : public SMDS_MeshFace {
 	public:
@@ -2374,6 +2410,11 @@ class SMDS_FaceOfEdges : public SMDS_MeshFace {
 };
 
 
+%extend SMDS_FaceOfEdges {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_FaceOfNodes;
 class SMDS_FaceOfNodes : public SMDS_MeshFace {
 	public:
@@ -2432,6 +2473,11 @@ class SMDS_FaceOfNodes : public SMDS_MeshFace {
 };
 
 
+%extend SMDS_FaceOfNodes {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_PolygonalFaceOfNodes;
 class SMDS_PolygonalFaceOfNodes : public SMDS_MeshFace {
 	public:
@@ -2482,6 +2528,11 @@ class SMDS_PolygonalFaceOfNodes : public SMDS_MeshFace {
 };
 
 
+%extend SMDS_PolygonalFaceOfNodes {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_QuadraticEdge;
 class SMDS_QuadraticEdge : public SMDS_MeshEdge {
 	public:
@@ -2540,6 +2591,11 @@ class SMDS_QuadraticEdge : public SMDS_MeshEdge {
 };
 
 
+%extend SMDS_QuadraticEdge {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_QuadraticFaceOfNodes;
 class SMDS_QuadraticFaceOfNodes : public SMDS_MeshFace {
 	public:
@@ -2630,6 +2686,11 @@ class SMDS_QuadraticFaceOfNodes : public SMDS_MeshFace {
 };
 
 
+%extend SMDS_QuadraticFaceOfNodes {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_QuadraticVolumeOfNodes;
 class SMDS_QuadraticVolumeOfNodes : public SMDS_MeshVolume {
 	public:
@@ -2808,6 +2869,11 @@ class SMDS_QuadraticVolumeOfNodes : public SMDS_MeshVolume {
 };
 
 
+%extend SMDS_QuadraticVolumeOfNodes {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_VolumeOfFaces;
 class SMDS_VolumeOfFaces : public SMDS_MeshVolume {
 	public:
@@ -2870,6 +2936,11 @@ class SMDS_VolumeOfFaces : public SMDS_MeshVolume {
 };
 
 
+%extend SMDS_VolumeOfFaces {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_VolumeOfNodes;
 class SMDS_VolumeOfNodes : public SMDS_MeshVolume {
 	public:
@@ -2972,6 +3043,11 @@ class SMDS_VolumeOfNodes : public SMDS_MeshVolume {
 };
 
 
+%extend SMDS_VolumeOfNodes {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMDS_PolyhedralVolumeOfNodes;
 class SMDS_PolyhedralVolumeOfNodes : public SMDS_VolumeOfNodes {
 	public:
@@ -3062,3 +3138,8 @@ class SMDS_PolyhedralVolumeOfNodes : public SMDS_VolumeOfNodes {
 };
 
 
+%extend SMDS_PolyhedralVolumeOfNodes {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
