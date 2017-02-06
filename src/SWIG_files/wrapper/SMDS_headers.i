@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2016 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -43,7 +43,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<SMDS_QuadraticEdge.hxx>
 #include<SMDS_QuadraticFaceOfNodes.hxx>
 #include<SMDS_QuadraticVolumeOfNodes.hxx>
-#include<SMDS_SetIterator.hxx>
 #include<SMDS_SpacePosition.hxx>
 #include<SMDS_TypeOfPosition.hxx>
 #include<SMDS_VertexPosition.hxx>

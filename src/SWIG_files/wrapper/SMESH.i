@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2016 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -53,46 +53,29 @@ def register_handle(handle, base_object):
 /* typedefs */
 typedef std::map <const SMDS_MeshElement * , std::list <const SMDS_MeshElement *>> TElemOfElemListMap;
 typedef const SMDS_MeshElement * SMDS_MeshElementPtr;
-typedef std::map <SMESH_TLink , const SMDS_MeshNode *>::iterator ItTLinkNode;
 typedef boost::shared_ptr <NumericalFunctor> SMESH::Controls::NumericalFunctorPtr;
 typedef NCollection_IndexedMap <TopoDS_Shape> SMESH_IndexedMapOfShape;
 typedef boost::shared_ptr <SMESH_ComputeError> SMESH_ComputeErrorPtr;
-typedef boost::shared_ptr <GroupColor> SMESH::Controls::GroupColorPtr;
 typedef boost::shared_ptr <SMESH_OctreeNodeIterator> SMESH_OctreeNodeIteratorPtr;
 typedef NCollection_Sequence <SMDS_MeshElementPtr> SMESH_SequenceOfElemPtr;
-typedef void ( * PVF ) ( );
 typedef SMDS_Iterator <SMESH_OctreeNode *> SMESH_OctreeNodeIterator;
 typedef boost::shared_ptr <Predicate> SMESH::Controls::PredicatePtr;
 typedef boost::shared_ptr<SMDS_Iterator <SMESH_subMesh *>> SMESH_subMeshIteratorPtr;
-typedef boost::shared_ptr <Length2D> SMESH::Controls::Length2DPtr;
-typedef boost::shared_ptr <ManifoldPart> SMESH::Controls::ManifoldPartPtr;
 typedef std::map <SMESH_TLink , const SMDS_MeshNode *> TLinkNodeMap;
-typedef boost::shared_ptr <FreeEdges> SMESH::Controls::FreeEdgesPtr;
 typedef NCollection_IndexedDataMap <SMESH_IndexedMapOfShape , TopoDS_Shape> SMESH_IndexedDataMapOfShapeIndexedMapOfShape;
-typedef boost::shared_ptr <LogicalNOT> SMESH::Controls::LogicalNOTPtr;
-typedef boost::shared_ptr <LogicalBinary> SMESH::Controls::LogicalBinaryPtr;
 typedef std::map<double , TNodeColumn> TParam2ColumnMap;
 typedef SMESH_Hypothesis::Hypothesis_Status TAlgoStateErrorName;
-typedef boost::shared_ptr <RangeOfIds> SMESH::Controls::RangeOfIdsPtr;
 typedef SMESH_subMeshEventListener EventListener;
 typedef pair<const SMDS_MeshNode * , const SMDS_MeshNode *> NLink;
 typedef const SMDS_MeshNode * SMDS_MeshNodePtr;
 typedef NCollection_Sequence <SMDS_MeshNodePtr> SMESH_SequenceOfNode;
-typedef std::map<SMESH_subMesh * , std::vector <int>>::iterator MapShapeNbElemsItr;
-typedef boost::shared_ptr <MultiConnection2D> SMESH::Controls::MultiConnection2DPtr;
-typedef boost::shared_ptr <Comparator> SMESH::Controls::ComparatorPtr;
-typedef std::map<SMESH_subMesh * , std::vector <int>> MapShapeNbElems;
 typedef boost::shared_ptr <Functor> SMESH::Controls::FunctorPtr;
 typedef SMESH_subMeshEventListenerData EventListenerData;
-typedef boost::shared_ptr <ElemGeomType> SMESH::Controls::ElemGeomTypePtr;
-typedef boost::shared_ptr <ElementsOnSurface> SMESH::Controls::ElementsOnSurfacePtr;
-typedef boost::shared_ptr <LinearOrQuadratic> SMESH::Controls::LinearOrQuadraticPtr;
+typedef std::map <SMESH_TLink , const SMDS_MeshNode *>::iterator ItTLinkNode;
 typedef std::map <const SMDS_MeshNode * , const SMDS_MeshNode *> TNodeNodeMap;
 typedef std::set <int> TSetOfInt;
-typedef boost::shared_ptr <EqualTo> SMESH::Controls::EqualToPtr;
 typedef std::set<const SMDS_MeshElement * , TIDCompare> TIDSortedElemSet;
 typedef std::vector <const SMDS_MeshNode *> TNodeColumn;
-typedef boost::shared_ptr <ElementsOnShape> SMESH::Controls::ElementsOnShapePtr;
 /* end typedefs declaration */
 
 /* public enums */
@@ -117,359 +100,12 @@ enum MeshDimension {
 
 /* end public enums declaration */
 
-%nodefaultctor SMESH_Block;
-class SMESH_Block : public math_FunctionSetWithDerivatives {
-/* public enums */
-enum TShapeID {
-	ID_NONE = 0,
-	ID_V000 = 1,
-	ID_V100 = 2,
-	ID_V010 = 3,
-	ID_V110 = 4,
-	ID_V001 = 5,
-	ID_V101 = 6,
-	ID_V011 = 7,
-	ID_V111 = 8,
-	ID_Ex00 = 9,
-	ID_Ex10 = 10,
-	ID_Ex01 = 11,
-	ID_Ex11 = 12,
-	ID_E0y0 = 13,
-	ID_E1y0 = 14,
-	ID_E0y1 = 15,
-	ID_E1y1 = 16,
-	ID_E00z = 17,
-	ID_E10z = 18,
-	ID_E01z = 19,
-	ID_E11z = 20,
-	ID_Fxy0 = 21,
-	ID_Fxy1 = 22,
-	ID_Fx0z = 23,
-	ID_Fx1z = 24,
-	ID_F0yz = 25,
-	ID_F1yz = 26,
-	ID_Shell = 27,
-};
-
-enum  {
-	ID_FirstV = ID_V000,
-	ID_FirstE = ID_Ex00,
-	ID_FirstF = ID_Fxy0,
-};
-
-/* end public enums declaration */
-
-	public:
-		%feature("compactdefaultargs") NbVertices;
-		%feature("autodoc", "	:rtype: int
-") NbVertices;
-		static int NbVertices ();
-		%feature("compactdefaultargs") NbEdges;
-		%feature("autodoc", "	:rtype: int
-") NbEdges;
-		static int NbEdges ();
-		%feature("compactdefaultargs") NbFaces;
-		%feature("autodoc", "	:rtype: int
-") NbFaces;
-		static int NbFaces ();
-		%feature("compactdefaultargs") NbSubShapes;
-		%feature("autodoc", "	:rtype: int
-") NbSubShapes;
-		static int NbSubShapes ();
-		%feature("compactdefaultargs") IsVertexID;
-		%feature("autodoc", "	:param theShapeID:
-	:type theShapeID: int
-	:rtype: inline bool
-") IsVertexID;
-		static inline bool IsVertexID (int theShapeID);
-		%feature("compactdefaultargs") IsEdgeID;
-		%feature("autodoc", "	:param theShapeID:
-	:type theShapeID: int
-	:rtype: inline bool
-") IsEdgeID;
-		static inline bool IsEdgeID (int theShapeID);
-		%feature("compactdefaultargs") IsFaceID;
-		%feature("autodoc", "	:param theShapeID:
-	:type theShapeID: int
-	:rtype: inline bool
-") IsFaceID;
-		static inline bool IsFaceID (int theShapeID);
-		%feature("compactdefaultargs") ShapeIndex;
-		%feature("autodoc", "	:param theShapeID:
-	:type theShapeID: int
-	:rtype: int
-") ShapeIndex;
-		static int ShapeIndex (int theShapeID);
-		%feature("compactdefaultargs") GetFaceEdgesIDs;
-		%feature("autodoc", "	:param faceID:
-	:type faceID: int
-	:param edgeVec:
-	:type edgeVec: std::vector< int> &
-	:rtype: void
-") GetFaceEdgesIDs;
-		static void GetFaceEdgesIDs (const int faceID,std::vector< int> & edgeVec);
-		%feature("compactdefaultargs") GetEdgeVertexIDs;
-		%feature("autodoc", "	:param edgeID:
-	:type edgeID: int
-	:param vertexVec:
-	:type vertexVec: std::vector< int> &
-	:rtype: void
-") GetEdgeVertexIDs;
-		static void GetEdgeVertexIDs (const int edgeID,std::vector< int> & vertexVec);
-		%feature("compactdefaultargs") GetCoordIndOnEdge;
-		%feature("autodoc", "	:param theEdgeID:
-	:type theEdgeID: int
-	:rtype: int
-") GetCoordIndOnEdge;
-		static int GetCoordIndOnEdge (const int theEdgeID);
-		%feature("compactdefaultargs") GetShapeCoef;
-		%feature("autodoc", "	:param theShapeID:
-	:type theShapeID: int
-	:rtype: double *
-") GetShapeCoef;
-		static double * GetShapeCoef (const int theShapeID);
-		%feature("compactdefaultargs") GetShapeIDByParams;
-		%feature("autodoc", "	:param theParams:
-	:type theParams: gp_XYZ
-	:rtype: int
-") GetShapeIDByParams;
-		static int GetShapeIDByParams (const gp_XYZ & theParams);
-		%feature("compactdefaultargs") DumpShapeID;
-		%feature("autodoc", "	:param theBlockShapeID:
-	:type theBlockShapeID: int
-	:param stream:
-	:type stream: std::ostream &
-	:rtype: std::ostream
-") DumpShapeID;
-		static std::ostream & DumpShapeID (const int theBlockShapeID,std::ostream & stream);
-		%feature("compactdefaultargs") SMESH_Block;
-		%feature("autodoc", "	:rtype: None
-") SMESH_Block;
-		 SMESH_Block ();
-		%feature("compactdefaultargs") LoadBlockShapes;
-		%feature("autodoc", "	:param theShell:
-	:type theShell: TopoDS_Shell &
-	:param theVertex000:
-	:type theVertex000: TopoDS_Vertex &
-	:param theVertex001:
-	:type theVertex001: TopoDS_Vertex &
-	:param theShapeIDMap:
-	:type theShapeIDMap: TopTools_IndexedMapOfOrientedShape &
-	:rtype: bool
-") LoadBlockShapes;
-		bool LoadBlockShapes (const TopoDS_Shell & theShell,const TopoDS_Vertex & theVertex000,const TopoDS_Vertex & theVertex001,TopTools_IndexedMapOfOrientedShape & theShapeIDMap);
-		%feature("compactdefaultargs") LoadBlockShapes;
-		%feature("autodoc", "	:param theShapeIDMap:
-	:type theShapeIDMap: TopTools_IndexedMapOfOrientedShape &
-	:rtype: bool
-") LoadBlockShapes;
-		bool LoadBlockShapes (const TopTools_IndexedMapOfOrientedShape & theShapeIDMap);
-		%feature("compactdefaultargs") LoadMeshBlock;
-		%feature("autodoc", "	:param theVolume:
-	:type theVolume: SMDS_MeshVolume *
-	:param theNode000Index:
-	:type theNode000Index: int
-	:param theNode001Index:
-	:type theNode001Index: int
-	:param theOrderedNodes:
-	:type theOrderedNodes: std::vector< SMDS_MeshNode *> &
-	:rtype: bool
-") LoadMeshBlock;
-		bool LoadMeshBlock (const SMDS_MeshVolume * theVolume,const int theNode000Index,const int theNode001Index,std::vector<const SMDS_MeshNode *> & theOrderedNodes);
-		%feature("compactdefaultargs") LoadFace;
-		%feature("autodoc", "	:param theFace:
-	:type theFace: TopoDS_Face &
-	:param theFaceID:
-	:type theFaceID: int
-	:param theShapeIDMap:
-	:type theShapeIDMap: TopTools_IndexedMapOfOrientedShape &
-	:rtype: bool
-") LoadFace;
-		bool LoadFace (const TopoDS_Face & theFace,const int theFaceID,const TopTools_IndexedMapOfOrientedShape & theShapeIDMap);
-		%feature("compactdefaultargs") Insert;
-		%feature("autodoc", "	:param theShape:
-	:type theShape: TopoDS_Shape &
-	:param theShapeID:
-	:type theShapeID: int
-	:param theShapeIDMap:
-	:type theShapeIDMap: TopTools_IndexedMapOfOrientedShape &
-	:rtype: bool
-") Insert;
-		static bool Insert (const TopoDS_Shape & theShape,const int theShapeID,TopTools_IndexedMapOfOrientedShape & theShapeIDMap);
-		%feature("compactdefaultargs") FindBlockShapes;
-		%feature("autodoc", "	:param theShell:
-	:type theShell: TopoDS_Shell &
-	:param theVertex000:
-	:type theVertex000: TopoDS_Vertex &
-	:param theVertex001:
-	:type theVertex001: TopoDS_Vertex &
-	:param theShapeIDMap:
-	:type theShapeIDMap: TopTools_IndexedMapOfOrientedShape &
-	:rtype: bool
-") FindBlockShapes;
-		static bool FindBlockShapes (const TopoDS_Shell & theShell,const TopoDS_Vertex & theVertex000,const TopoDS_Vertex & theVertex001,TopTools_IndexedMapOfOrientedShape & theShapeIDMap);
-		%feature("compactdefaultargs") VertexPoint;
-		%feature("autodoc", "	:param theVertexID:
-	:type theVertexID: int
-	:param thePoint:
-	:type thePoint: gp_XYZ
-	:rtype: bool
-") VertexPoint;
-		bool VertexPoint (const int theVertexID,gp_XYZ & thePoint);
-		%feature("compactdefaultargs") EdgePoint;
-		%feature("autodoc", "	:param theEdgeID:
-	:type theEdgeID: int
-	:param theParams:
-	:type theParams: gp_XYZ
-	:param thePoint:
-	:type thePoint: gp_XYZ
-	:rtype: bool
-") EdgePoint;
-		bool EdgePoint (const int theEdgeID,const gp_XYZ & theParams,gp_XYZ & thePoint);
-		%feature("compactdefaultargs") EdgeU;
-		%feature("autodoc", "	:param theEdgeID:
-	:type theEdgeID: int
-	:param theParams:
-	:type theParams: gp_XYZ
-	:param theU:
-	:type theU: double &
-	:rtype: bool
-") EdgeU;
-		bool EdgeU (const int theEdgeID,const gp_XYZ & theParams,Standard_Real &OutValue);
-		%feature("compactdefaultargs") FacePoint;
-		%feature("autodoc", "	:param theFaceID:
-	:type theFaceID: int
-	:param theParams:
-	:type theParams: gp_XYZ
-	:param thePoint:
-	:type thePoint: gp_XYZ
-	:rtype: bool
-") FacePoint;
-		bool FacePoint (const int theFaceID,const gp_XYZ & theParams,gp_XYZ & thePoint);
-		%feature("compactdefaultargs") FaceUV;
-		%feature("autodoc", "	:param theFaceID:
-	:type theFaceID: int
-	:param theParams:
-	:type theParams: gp_XYZ
-	:param theUV:
-	:type theUV: gp_XY
-	:rtype: bool
-") FaceUV;
-		bool FaceUV (const int theFaceID,const gp_XYZ & theParams,gp_XY & theUV);
-		%feature("compactdefaultargs") ShellPoint;
-		%feature("autodoc", "	:param theParams:
-	:type theParams: gp_XYZ
-	:param thePoint:
-	:type thePoint: gp_XYZ
-	:rtype: bool
-") ShellPoint;
-		bool ShellPoint (const gp_XYZ & theParams,gp_XYZ & thePoint);
-		%feature("compactdefaultargs") ShellPoint;
-		%feature("autodoc", "	:param theParams:
-	:type theParams: gp_XYZ
-	:param thePointOnShape:
-	:type thePointOnShape: std::vector<gp_XYZ>
-	:param thePoint:
-	:type thePoint: gp_XYZ
-	:rtype: bool
-") ShellPoint;
-		static bool ShellPoint (const gp_XYZ & theParams,const std::vector<gp_XYZ> & thePointOnShape,gp_XYZ & thePoint);
-		%feature("compactdefaultargs") ComputeParameters;
-		%feature("autodoc", "	:param thePoint:
-	:type thePoint: gp_Pnt
-	:param theParams:
-	:type theParams: gp_XYZ
-	:param theShapeID: default value is ID_Shell
-	:type theShapeID: int
-	:param theParamsHint: default value is gp_XYZ(-1,-1,-1)
-	:type theParamsHint: gp_XYZ
-	:rtype: bool
-") ComputeParameters;
-		bool ComputeParameters (const gp_Pnt & thePoint,gp_XYZ & theParams,const int theShapeID = ID_Shell,const gp_XYZ & theParamsHint = gp_XYZ(-1,-1,-1));
-		%feature("compactdefaultargs") VertexParameters;
-		%feature("autodoc", "	:param theVertexID:
-	:type theVertexID: int
-	:param theParams:
-	:type theParams: gp_XYZ
-	:rtype: bool
-") VertexParameters;
-		bool VertexParameters (const int theVertexID,gp_XYZ & theParams);
-		%feature("compactdefaultargs") EdgeParameters;
-		%feature("autodoc", "	:param theEdgeID:
-	:type theEdgeID: int
-	:param theU:
-	:type theU: double
-	:param theParams:
-	:type theParams: gp_XYZ
-	:rtype: bool
-") EdgeParameters;
-		bool EdgeParameters (const int theEdgeID,const double theU,gp_XYZ & theParams);
-		%feature("compactdefaultargs") IsForwardEdge;
-		%feature("autodoc", "	:param theEdge:
-	:type theEdge: TopoDS_Edge &
-	:param theShapeIDMap:
-	:type theShapeIDMap: TopTools_IndexedMapOfOrientedShape &
-	:rtype: bool
-") IsForwardEdge;
-		static bool IsForwardEdge (const TopoDS_Edge & theEdge,const TopTools_IndexedMapOfOrientedShape & theShapeIDMap);
-		%feature("compactdefaultargs") GetOrderedEdges;
-		%feature("autodoc", "	:param theFace:
-	:type theFace: TopoDS_Face &
-	:param theFirstVertex:
-	:type theFirstVertex: TopoDS_Vertex
-	:param theEdges:
-	:type theEdges: std::list< TopoDS_Edge> &
-	:param theNbVertexInWires:
-	:type theNbVertexInWires: std::list< int> &
-	:param theShapeAnalysisAlgo: default value is false
-	:type theShapeAnalysisAlgo: bool
-	:rtype: int
-") GetOrderedEdges;
-		static int GetOrderedEdges (const TopoDS_Face & theFace,TopoDS_Vertex theFirstVertex,std::list< TopoDS_Edge> & theEdges,std::list< int> & theNbVertexInWires,const bool theShapeAnalysisAlgo = false);
-		%feature("compactdefaultargs") NbVariables;
-		%feature("autodoc", "	:rtype: int
-") NbVariables;
-		Standard_Integer NbVariables ();
-		%feature("compactdefaultargs") NbEquations;
-		%feature("autodoc", "	:rtype: int
-") NbEquations;
-		Standard_Integer NbEquations ();
-		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "	:param X:
-	:type X: math_Vector &
-	:param F:
-	:type F: math_Vector &
-	:rtype: bool
-") Value;
-		Standard_Boolean Value (const math_Vector & X,math_Vector & F);
-		%feature("compactdefaultargs") Derivatives;
-		%feature("autodoc", "	:param X:
-	:type X: math_Vector &
-	:param D:
-	:type D: math_Matrix &
-	:rtype: bool
-") Derivatives;
-		Standard_Boolean Derivatives (const math_Vector & X,math_Matrix & D);
-		%feature("compactdefaultargs") Values;
-		%feature("autodoc", "	:param X:
-	:type X: math_Vector &
-	:param F:
-	:type F: math_Vector &
-	:param D:
-	:type D: math_Matrix &
-	:rtype: bool
-") Values;
-		Standard_Boolean Values (const math_Vector & X,math_Vector & F,math_Matrix & D);
-		%feature("compactdefaultargs") GetStateNumber;
-		%feature("autodoc", "	:rtype: int
-") GetStateNumber;
-		Standard_Integer GetStateNumber ();
-};
-
-
 %nodefaultctor SMESH_ComputeError;
 class SMESH_ComputeError {
 	public:
+		int myName;
+		std::string myComment;
+		std::list< SMDS_MeshElement *> myBadElements;
 		%feature("compactdefaultargs") New;
 		%feature("autodoc", "	* //!< to explain COMPERR_BAD_INPUT_MESH
 
@@ -507,6 +143,11 @@ class SMESH_ComputeError {
 };
 
 
+%extend SMESH_ComputeError {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_ElementSearcher;
 class SMESH_ElementSearcher {
 	public:
@@ -523,6 +164,11 @@ class SMESH_ElementSearcher {
 };
 
 
+%extend SMESH_ElementSearcher {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_Exception;
 class SMESH_Exception : public std::exception {
 	public:
@@ -551,6 +197,11 @@ class SMESH_Exception : public std::exception {
 };
 
 
+%extend SMESH_Exception {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_Gen;
 class SMESH_Gen {
 	public:
@@ -683,6 +334,11 @@ class SMESH_Gen {
 };
 
 
+%extend SMESH_Gen {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_Group;
 class SMESH_Group {
 	public:
@@ -717,6 +373,11 @@ class SMESH_Group {
 };
 
 
+%extend SMESH_Group {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_HypoPredicate;
 class SMESH_HypoPredicate {
 	public:
@@ -731,8 +392,14 @@ class SMESH_HypoPredicate {
 };
 
 
+%extend SMESH_HypoPredicate {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_Hypothesis;
 class SMESH_Hypothesis : public SMESHDS_Hypothesis {
+	public:
 /* public enums */
 enum Hypothesis_Status {
 	HYP_OK = 0,
@@ -753,7 +420,6 @@ enum Hypothesis_Status {
 
 /* end public enums declaration */
 
-	public:
 		%feature("compactdefaultargs") GetDim;
 		%feature("autodoc", "	:rtype: int
 ") GetDim;
@@ -833,9 +499,16 @@ enum Hypothesis_Status {
 };
 
 
+%extend SMESH_Hypothesis {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_Mesh;
 class SMESH_Mesh {
 	public:
+typedef TopTools_IndexedDataMapOfShapeListOfShape TAncestorMap;
+typedef boost::shared_ptr<SMDS_Iterator <SMESH_Group *>> GroupIteratorPtr;
 		%feature("compactdefaultargs") SMESH_Mesh;
 		%feature("autodoc", "	:param theLocalId:
 	:type theLocalId: int
@@ -1243,6 +916,11 @@ class SMESH_Mesh {
 };
 
 
+%extend SMESH_Mesh {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_MeshEditor_PathPoint;
 class SMESH_MeshEditor_PathPoint {
 	public:
@@ -1293,6 +971,11 @@ class SMESH_MeshEditor_PathPoint {
 };
 
 
+%extend SMESH_MeshEditor_PathPoint {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_MeshVSLink;
 class SMESH_MeshVSLink : public MeshVS_DataSource3D {
 	public:
@@ -1407,8 +1090,14 @@ class SMESH_MeshVSLink : public MeshVS_DataSource3D {
 };
 
 
+%extend SMESH_MeshVSLink {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_MesherHelper;
 class SMESH_MesherHelper {
+	public:
 /* public enums */
 enum MType {
 	LINEAR = 0,
@@ -1418,7 +1107,6 @@ enum MType {
 
 /* end public enums declaration */
 
-	public:
 		%feature("compactdefaultargs") IsMedium;
 		%feature("autodoc", "	* /*! * \brief Returns true if given node is medium * \param n - node to check * \param typeToCheck - type of elements containing the node to ask about node status * etval bool - check result */
 
@@ -1864,6 +1552,11 @@ enum MType {
 };
 
 
+%extend SMESH_MesherHelper {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_NodeSearcher;
 class SMESH_NodeSearcher {
 	public:
@@ -1884,8 +1577,14 @@ class SMESH_NodeSearcher {
 };
 
 
+%extend SMESH_NodeSearcher {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_Pattern;
 class SMESH_Pattern {
+	public:
 /* public enums */
 enum ErrorCode {
 	ERR_OK = 0,
@@ -1919,7 +1618,6 @@ enum ErrorCode {
 
 /* end public enums declaration */
 
-	public:
 		%feature("compactdefaultargs") SMESH_Pattern;
 		%feature("autodoc", "	:rtype: None
 ") SMESH_Pattern;
@@ -2091,6 +1789,11 @@ enum ErrorCode {
 };
 
 
+%extend SMESH_Pattern {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_TLink;
 class SMESH_TLink : public NLink {
 	public:
@@ -2119,8 +1822,14 @@ class SMESH_TLink : public NLink {
 };
 
 
+%extend SMESH_TLink {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_subMesh;
 class SMESH_subMesh {
+	public:
 /* public enums */
 enum compute_state {
 	NOT_READY = 0,
@@ -2164,7 +1873,6 @@ enum event_type {
 
 /* end public enums declaration */
 
-	public:
 		%feature("compactdefaultargs") SMESH_subMesh;
 		%feature("autodoc", "	:param Id:
 	:type Id: int
@@ -2346,6 +2054,11 @@ enum event_type {
 };
 
 
+%extend SMESH_subMesh {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_subMeshEventListener;
 class SMESH_subMeshEventListener {
 	public:
@@ -2380,9 +2093,17 @@ class SMESH_subMeshEventListener {
 };
 
 
+%extend SMESH_subMeshEventListener {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_subMeshEventListenerData;
 class SMESH_subMeshEventListenerData {
 	public:
+		bool myIsDeletable;
+		int myType;
+		std::list<SMESH_subMesh *> mySubMeshes;
 		%feature("compactdefaultargs") SMESH_subMeshEventListenerData;
 		%feature("autodoc", "	* //!< generally: submeshes depending
 
@@ -2408,250 +2129,14 @@ class SMESH_subMeshEventListenerData {
 };
 
 
-%nodefaultctor SMESH_Algo;
-class SMESH_Algo : public SMESH_Hypothesis {
-	public:
-		%feature("compactdefaultargs") SaveTo;
-		%feature("autodoc", "	* /*! * \brief Saves nothing in a stream * \param save - the stream * etval virtual std::ostream & - the stream */
-
-	:param save:
-	:type save: std::ostream &
-	:rtype: std::ostream
-") SaveTo;
-		std::ostream & SaveTo (std::ostream & save);
-		%feature("compactdefaultargs") LoadFrom;
-		%feature("autodoc", "	* /*! * \brief Loads nothing from a stream * \param load - the stream * etval virtual std::ostream & - the stream */
-
-	:param load:
-	:type load: std::istream &
-	:rtype: std::istream
-") LoadFrom;
-		std::istream & LoadFrom (std::istream & load);
-		%feature("compactdefaultargs") GetCompatibleHypothesis;
-		%feature("autodoc", "	* /*! * \brief Returns all types of compatible hypotheses */
-
-	:rtype: std::vector< std::string>
-") GetCompatibleHypothesis;
-		const std::vector< std::string> & GetCompatibleHypothesis ();
-		%feature("compactdefaultargs") CheckHypothesis;
-		%feature("autodoc", "	* /*! * \brief Check hypothesis definition to mesh a shape * \param aMesh - the mesh * \param aShape - the shape * \param aStatus - check result * etval bool - true if hypothesis is well defined */
-
-	:param aMesh:
-	:type aMesh: SMESH_Mesh &
-	:param aShape:
-	:type aShape: TopoDS_Shape &
-	:param aStatus:
-	:type aStatus: SMESH_Hypothesis::Hypothesis_Status &
-	:rtype: bool
-") CheckHypothesis;
-		bool CheckHypothesis (SMESH_Mesh & aMesh,const TopoDS_Shape & aShape,SMESH_Hypothesis::Hypothesis_Status & aStatus);
-		%feature("compactdefaultargs") Compute;
-		%feature("autodoc", "	* /*! * \brief Computes mesh on a shape * \param aMesh - the mesh * \param aShape - the shape * etval bool - is a success * * Algorithms that !NeedDescretBoundary() || !OnlyUnaryInput() are * to set SMESH_ComputeError returned by SMESH_submesh::GetComputeError() * to report problematic subshapes */
-
-	:param aMesh:
-	:type aMesh: SMESH_Mesh &
-	:param aShape:
-	:type aShape: TopoDS_Shape &
-	:rtype: bool
-") Compute;
-		bool Compute (SMESH_Mesh & aMesh,const TopoDS_Shape & aShape);
-		%feature("compactdefaultargs") Compute;
-		%feature("autodoc", "	* /*! * \brief Computes mesh without geometry * \param aMesh - the mesh * \param aHelper - helper that must be used for adding elements to \aaMesh * etval bool - is a success * * The method is called if ( !aMesh->HasShapeToMesh() ) */
-
-	:param aMesh:
-	:type aMesh: SMESH_Mesh &
-	:param aHelper:
-	:type aHelper: SMESH_MesherHelper *
-	:rtype: bool
-") Compute;
-		bool Compute (SMESH_Mesh & aMesh,SMESH_MesherHelper * aHelper);
-		%feature("compactdefaultargs") Evaluate;
-		%feature("autodoc", "	* /*! * \brief evaluates size of prospective mesh on a shape * \param aMesh - the mesh * \param aShape - the shape * \param aNbElems - prospective number of elements by types * etval bool - is a success */
-
-	:param aMesh:
-	:type aMesh: SMESH_Mesh &
-	:param aShape:
-	:type aShape: TopoDS_Shape &
-	:param aResMap:
-	:type aResMap: MapShapeNbElems &
-	:rtype: bool
-") Evaluate;
-		bool Evaluate (SMESH_Mesh & aMesh,const TopoDS_Shape & aShape,MapShapeNbElems & aResMap);
-		%feature("compactdefaultargs") GetUsedHypothesis;
-		%feature("autodoc", "	* /*! * \brief Returns a list of compatible hypotheses used to mesh a shape * \param aMesh - the mesh * \param aShape - the shape * \param ignoreAuxiliary - do not include auxiliary hypotheses in the list * etval const std::list <const SMESHDS_Hypothesis*> - hypotheses list * * List the hypothesis used by the algorithm associated to the shape. * Hypothesis associated to father shape -are- taken into account (see * GetAppliedHypothesis). Relevant hypothesis have a name (type) listed in * the algorithm. This method could be surcharged by specific algorithms, in * case of several hypothesis simultaneously applicable. */
-
-	:param aMesh:
-	:type aMesh: SMESH_Mesh &
-	:param aShape:
-	:type aShape: TopoDS_Shape &
-	:param ignoreAuxiliary: default value is true
-	:type ignoreAuxiliary: bool
-	:rtype: std::list< SMESHDS_Hypothesis *>
-") GetUsedHypothesis;
-		const std::list<const SMESHDS_Hypothesis *> & GetUsedHypothesis (SMESH_Mesh & aMesh,const TopoDS_Shape & aShape,const bool ignoreAuxiliary = true);
-		%feature("compactdefaultargs") GetAppliedHypothesis;
-		%feature("autodoc", "	* /*! * \brief Returns a list of compatible hypotheses assigned to a shape in a mesh * \param aMesh - the mesh * \param aShape - the shape * \param ignoreAuxiliary - do not include auxiliary hypotheses in the list * etval const std::list <const SMESHDS_Hypothesis*> - hypotheses list * * List the relevant hypothesis associated to the shape. Relevant hypothesis * have a name (type) listed in the algorithm. Hypothesis associated to * father shape -are not- taken into account (see GetUsedHypothesis) */
-
-	:param aMesh:
-	:type aMesh: SMESH_Mesh &
-	:param aShape:
-	:type aShape: TopoDS_Shape &
-	:param ignoreAuxiliary: default value is true
-	:type ignoreAuxiliary: bool
-	:rtype: std::list< SMESHDS_Hypothesis *>
-") GetAppliedHypothesis;
-		const std::list<const SMESHDS_Hypothesis *> & GetAppliedHypothesis (SMESH_Mesh & aMesh,const TopoDS_Shape & aShape,const bool ignoreAuxiliary = true);
-		%feature("compactdefaultargs") InitCompatibleHypoFilter;
-		%feature("autodoc", "	* /*! * \brief Make the filter recognize only compatible hypotheses * \param theFilter - the filter to initialize * \param ignoreAuxiliary - make filter ignore compatible auxiliary hypotheses * etval bool - true if the algo has compatible hypotheses */
-
-	:param theFilter:
-	:type theFilter: SMESH_HypoFilter &
-	:param ignoreAuxiliary:
-	:type ignoreAuxiliary: bool
-	:rtype: bool
-") InitCompatibleHypoFilter;
-		bool InitCompatibleHypoFilter (SMESH_HypoFilter & theFilter,const bool ignoreAuxiliary);
-		%feature("compactdefaultargs") SetParametersByMesh;
-		%feature("autodoc", "	* /*! * \brief Just return false as the algorithm does not hold parameters values */
-
-	:param theMesh:
-	:type theMesh: SMESH_Mesh *
-	:param theShape:
-	:type theShape: TopoDS_Shape &
-	:rtype: bool
-") SetParametersByMesh;
-		bool SetParametersByMesh (const SMESH_Mesh * theMesh,const TopoDS_Shape & theShape);
-		%feature("compactdefaultargs") SetParametersByDefaults;
-		%feature("autodoc", "	:param dflts:
-	:type dflts: SMESH_0D_Algo::TDefaults &
-	:param theMesh: default value is 0
-	:type theMesh: SMESH_Mesh *
-	:rtype: bool
-") SetParametersByDefaults;
-		bool SetParametersByDefaults (const SMESH_0D_Algo::TDefaults & dflts,const SMESH_Mesh * theMesh = 0);
-		%feature("compactdefaultargs") GetComputeError;
-		%feature("autodoc", "	* /*! * \brief return compute error */
-
-	:rtype: SMESH_ComputeErrorPtr
-") GetComputeError;
-		SMESH_ComputeErrorPtr GetComputeError ();
-		%feature("compactdefaultargs") InitComputeError;
-		%feature("autodoc", "	* /*! * \brief initialize compute error */
-
-	:rtype: None
-") InitComputeError;
-		void InitComputeError ();
-		%feature("compactdefaultargs") OnlyUnaryInput;
-		%feature("autodoc", "	:rtype: bool
-") OnlyUnaryInput;
-		bool OnlyUnaryInput ();
-		%feature("compactdefaultargs") NeedDescretBoundary;
-		%feature("autodoc", "	:rtype: bool
-") NeedDescretBoundary;
-		bool NeedDescretBoundary ();
-		%feature("compactdefaultargs") NeedShape;
-		%feature("autodoc", "	:rtype: bool
-") NeedShape;
-		bool NeedShape ();
-		%feature("compactdefaultargs") SupportSubmeshes;
-		%feature("autodoc", "	:rtype: bool
-") SupportSubmeshes;
-		bool SupportSubmeshes ();
-		%feature("compactdefaultargs") SetEventListener;
-		%feature("autodoc", "	* /*! * \brief Sets event listener to submeshes if necessary * \param subMesh - submesh where algo is set * * This method is called when a submesh gets HYP_OK algo_state. * After being set, event listener is notified on each event of a submesh. * By default non listener is set */
-
-	:param subMesh:
-	:type subMesh: SMESH_subMesh *
-	:rtype: None
-") SetEventListener;
-		void SetEventListener (SMESH_subMesh * subMesh);
-		%feature("compactdefaultargs") SubmeshRestored;
-		%feature("autodoc", "	* /*! * \brief Allow algo to do something after persistent restoration * \param subMesh - restored submesh * * This method is called only if a submesh has HYP_OK algo_state. */
-
-	:param subMesh:
-	:type subMesh: SMESH_subMesh *
-	:rtype: None
-") SubmeshRestored;
-		void SubmeshRestored (SMESH_subMesh * subMesh);
-		%feature("compactdefaultargs") GetNodeParamOnEdge;
-		%feature("autodoc", "	* /*! * \brief Fill vector of node parameters on geometrical edge, including vertex nodes * \param theMesh - The mesh containing nodes * \param theEdge - The geometrical edge of interest * \param theParams - The resulting vector of sorted node parameters * etval bool - false if not all parameters are OK */
-
-	:param theMesh:
-	:type theMesh: SMESHDS_Mesh *
-	:param theEdge:
-	:type theEdge: TopoDS_Edge &
-	:param theParams:
-	:type theParams: std::vector< double> &
-	:rtype: bool
-") GetNodeParamOnEdge;
-		static bool GetNodeParamOnEdge (const SMESHDS_Mesh * theMesh,const TopoDS_Edge & theEdge,std::vector< double> & theParams);
-		%feature("compactdefaultargs") GetSortedNodesOnEdge;
-		%feature("autodoc", "	* /*! * \brief Fill map of node parameter on geometrical edge to node it-self * \param theMesh - The mesh containing nodes * \param theEdge - The geometrical edge of interest * \param theNodes - The resulting map * \param ignoreMediumNodes - to store medium nodes of quadratic elements or not * etval bool - false if not all parameters are OK */
-
-	:param theMesh:
-	:type theMesh: SMESHDS_Mesh *
-	:param theEdge:
-	:type theEdge: TopoDS_Edge &
-	:param ignoreMediumNodes:
-	:type ignoreMediumNodes: bool
-	:param theNodes:
-	:type theNodes: std::map< double,  SMDS_MeshNode *> &
-	:rtype: bool
-") GetSortedNodesOnEdge;
-		static bool GetSortedNodesOnEdge (const SMESHDS_Mesh * theMesh,const TopoDS_Edge & theEdge,const bool ignoreMediumNodes,std::map< double, const SMDS_MeshNode *> & theNodes);
-		%feature("compactdefaultargs") IsReversedSubMesh;
-		%feature("autodoc", "	* /*! * \brief Find out elements orientation on a geometrical face * \param theFace - The face correctly oriented in the shape being meshed * \param theMeshDS - The mesh data structure * etval bool - true if the face normal and the normal of first element * in the correspoding submesh point in different directions */
-
-	:param theFace:
-	:type theFace: TopoDS_Face &
-	:param theMeshDS:
-	:type theMeshDS: SMESHDS_Mesh *
-	:rtype: bool
-") IsReversedSubMesh;
-		static bool IsReversedSubMesh (const TopoDS_Face & theFace,SMESHDS_Mesh * theMeshDS);
-		%feature("compactdefaultargs") EdgeLength;
-		%feature("autodoc", "	* /*! * \brief Compute length of an edge * \param E - the edge * etval double - the length */
-
-	:param E:
-	:type E: TopoDS_Edge &
-	:rtype: double
-") EdgeLength;
-		static double EdgeLength (const TopoDS_Edge & E);
-		%feature("compactdefaultargs") Continuity;
-		%feature("autodoc", "	* /*! * \brief Return continuity of two edges * \param E1 - the 1st edge * \param E2 - the 2nd edge * etval GeomAbs_Shape - regularity at the junction between E1 and E2 */
-
-	:param E1:
-	:type E1: TopoDS_Edge &
-	:param E2:
-	:type E2: TopoDS_Edge &
-	:rtype: GeomAbs_Shape
-") Continuity;
-		static GeomAbs_Shape Continuity (const TopoDS_Edge & E1,const TopoDS_Edge & E2);
-		%feature("compactdefaultargs") IsContinuous;
-		%feature("autodoc", "	* /*! * \brief Return true if an edge can be considered as a continuation of another */
-
-	:param E1:
-	:type E1: TopoDS_Edge &
-	:param E2:
-	:type E2: TopoDS_Edge &
-	:rtype: bool
-") IsContinuous;
-		static bool IsContinuous (const TopoDS_Edge & E1,const TopoDS_Edge & E2);
-		%feature("compactdefaultargs") VertexNode;
-		%feature("autodoc", "	* /*! * \brief Return the node built on a vertex * \param V - the vertex * \param meshDS - mesh * etval const SMDS_MeshNode* - found node or NULL */
-
-	:param V:
-	:type V: TopoDS_Vertex &
-	:param meshDS:
-	:type meshDS: SMESHDS_Mesh *
-	:rtype: SMDS_MeshNode *
-") VertexNode;
-		static const SMDS_MeshNode * VertexNode (const TopoDS_Vertex & V,const SMESHDS_Mesh * meshDS);
+%extend SMESH_subMeshEventListenerData {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
 };
-
-
 %nodefaultctor SMESH_HypoFilter;
 class SMESH_HypoFilter : public SMESH_HypoPredicate {
+	public:
 /* public enums */
 enum Logical {
 	AND = 0,
@@ -2669,7 +2154,6 @@ enum Comparison {
 
 /* end public enums declaration */
 
-	public:
 		%feature("compactdefaultargs") SMESH_HypoFilter;
 		%feature("autodoc", "	:rtype: None
 ") SMESH_HypoFilter;
@@ -2789,6 +2273,11 @@ enum Comparison {
 };
 
 
+%extend SMESH_HypoFilter {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESH_OctreeNode;
 class SMESH_OctreeNode : public SMESH_Octree {
 	public:
@@ -2887,81 +2376,8 @@ class SMESH_OctreeNode : public SMESH_Octree {
 };
 
 
-%nodefaultctor SMESH_0D_Algo;
-class SMESH_0D_Algo : public SMESH_Algo {
-	public:
-		%feature("compactdefaultargs") SMESH_0D_Algo;
-		%feature("autodoc", "	:param hypId:
-	:type hypId: int
-	:param studyId:
-	:type studyId: int
-	:param gen:
-	:type gen: SMESH_Gen *
-	:rtype: None
-") SMESH_0D_Algo;
-		 SMESH_0D_Algo (int hypId,int studyId,SMESH_Gen * gen);
+%extend SMESH_OctreeNode {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
 };
-
-
-%nodefaultctor SMESH_1D_Algo;
-class SMESH_1D_Algo : public SMESH_Algo {
-	public:
-		%feature("compactdefaultargs") SMESH_1D_Algo;
-		%feature("autodoc", "	:param hypId:
-	:type hypId: int
-	:param studyId:
-	:type studyId: int
-	:param gen:
-	:type gen: SMESH_Gen *
-	:rtype: None
-") SMESH_1D_Algo;
-		 SMESH_1D_Algo (int hypId,int studyId,SMESH_Gen * gen);
-};
-
-
-%nodefaultctor SMESH_2D_Algo;
-class SMESH_2D_Algo : public SMESH_Algo {
-	public:
-		%feature("compactdefaultargs") SMESH_2D_Algo;
-		%feature("autodoc", "	:param hypId:
-	:type hypId: int
-	:param studyId:
-	:type studyId: int
-	:param gen:
-	:type gen: SMESH_Gen *
-	:rtype: None
-") SMESH_2D_Algo;
-		 SMESH_2D_Algo (int hypId,int studyId,SMESH_Gen * gen);
-		%feature("compactdefaultargs") NumberOfWires;
-		%feature("autodoc", "	:param S:
-	:type S: TopoDS_Shape &
-	:rtype: int
-") NumberOfWires;
-		int NumberOfWires (const TopoDS_Shape & S);
-		%feature("compactdefaultargs") NumberOfPoints;
-		%feature("autodoc", "	:param aMesh:
-	:type aMesh: SMESH_Mesh &
-	:param W:
-	:type W: TopoDS_Wire &
-	:rtype: int
-") NumberOfPoints;
-		int NumberOfPoints (SMESH_Mesh & aMesh,const TopoDS_Wire & W);
-};
-
-
-%nodefaultctor SMESH_3D_Algo;
-class SMESH_3D_Algo : public SMESH_Algo {
-	public:
-		%feature("compactdefaultargs") SMESH_3D_Algo;
-		%feature("autodoc", "	:param hypId:
-	:type hypId: int
-	:param studyId:
-	:type studyId: int
-	:param gen:
-	:type gen: SMESH_Gen *
-	:rtype: None
-") SMESH_3D_Algo;
-		 SMESH_3D_Algo (int hypId,int studyId,SMESH_Gen * gen);
-};
-
-

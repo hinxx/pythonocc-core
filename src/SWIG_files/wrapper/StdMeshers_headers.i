@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2016 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -39,7 +39,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StdMeshers_NumberOfLayers.hxx>
 #include<StdMeshers_NumberOfLayers2D.hxx>
 #include<StdMeshers_NumberOfSegments.hxx>
-#include<StdMeshers_Penta_3D.hxx>
 #include<StdMeshers_Prism_3D.hxx>
 #include<StdMeshers_ProjectionSource1D.hxx>
 #include<StdMeshers_ProjectionSource2D.hxx>
@@ -62,25 +61,17 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StdMeshers_StartEndLength.hxx>
 #include<StdMeshers_TrianglePreference.hxx>
 #include<StdMeshers_UseExisting_1D2D.hxx>
-#include<SMESH_0D_Algo.hxx>
-#include<SMESH_1D_Algo.hxx>
-#include<SMESH_2D_Algo.hxx>
-#include<SMESH_3D_Algo.hxx>
-#include<SMESH_Algo.hxx>
 #include<SMESH_Array1.hxx>
 #include<SMESH_Array2.hxx>
-#include<SMESH_Block.hxx>
 #include<SMESH_Comment.hxx>
 #include<SMESH_ComputeError.hxx>
 #include<SMESH_Controls.hxx>
-#include<SMESH_ControlsDef.hxx>
 #include<SMESH_DataMapOfElemPtrSequenceOfElemPtr.hxx>
 #include<SMESH_DefineArray2.hxx>
 #include<SMESH_DefineIndexedMap.hxx>
 #include<SMESH_DriverDAT.hxx>
 #include<SMESH_DriverSTL.hxx>
 #include<SMESH_DriverUNV.hxx>
-#include<SMESH_ExceptHandlers.hxx>
 #include<SMESH_Exception.hxx>
 #include<SMESH_Gen.hxx>
 #include<SMESH_Group.hxx>
@@ -156,7 +147,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<SMDS_QuadraticEdge.hxx>
 #include<SMDS_QuadraticFaceOfNodes.hxx>
 #include<SMDS_QuadraticVolumeOfNodes.hxx>
-#include<SMDS_SetIterator.hxx>
 #include<SMDS_SpacePosition.hxx>
 #include<SMDS_TypeOfPosition.hxx>
 #include<SMDS_VertexPosition.hxx>

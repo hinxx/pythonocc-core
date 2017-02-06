@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2015 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2016 Thomas Paviot (tpaviot@gmail.com)
 
 
 This file is part of pythonOCC.
@@ -494,6 +494,11 @@ class SMESHDS_Command {
 };
 
 
+%extend SMESHDS_Command {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESHDS_Document;
 class SMESHDS_Document {
 	public:
@@ -574,6 +579,11 @@ class SMESHDS_Document {
 };
 
 
+%extend SMESHDS_Document {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESHDS_Mesh;
 class SMESHDS_Mesh : public SMDS_Mesh {
 	public:
@@ -1872,6 +1882,11 @@ class SMESHDS_Mesh : public SMDS_Mesh {
 };
 
 
+%extend SMESHDS_Mesh {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESHDS_Script;
 class SMESHDS_Script {
 	public:
@@ -2286,6 +2301,11 @@ class SMESHDS_Script {
 };
 
 
+%extend SMESHDS_Script {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESHDS_SubMesh;
 class SMESHDS_SubMesh {
 	public:
@@ -2376,6 +2396,11 @@ class SMESHDS_SubMesh {
 };
 
 
+%extend SMESHDS_SubMesh {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESHDS_Group;
 class SMESHDS_Group : public SMESHDS_GroupBase {
 	public:
@@ -2442,6 +2467,11 @@ class SMESHDS_Group : public SMESHDS_GroupBase {
 };
 
 
+%extend SMESHDS_Group {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
 %nodefaultctor SMESHDS_GroupOnGeom;
 class SMESHDS_GroupOnGeom : public SMESHDS_GroupBase {
 	public:
@@ -2486,3 +2516,8 @@ class SMESHDS_GroupOnGeom : public SMESHDS_GroupBase {
 };
 
 
+%extend SMESHDS_GroupOnGeom {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
