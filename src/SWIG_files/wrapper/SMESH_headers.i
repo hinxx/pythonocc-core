@@ -23,7 +23,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<SMESH_Comment.hxx>
 #include<SMESH_ComputeError.hxx>
 #include<SMESH_Controls.hxx>
-#include<SMESH_DataMapOfElemPtrSequenceOfElemPtr.hxx>
 #include<SMESH_DefineArray2.hxx>
 #include<SMESH_DefineIndexedMap.hxx>
 #include<SMESH_DriverDAT.hxx>
@@ -32,7 +31,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<SMESH_Exception.hxx>
 #include<SMESH_Gen.hxx>
 #include<SMESH_Group.hxx>
-#include<SMESH_HypoFilter.hxx>
 #include<SMESH_Hypothesis.hxx>
 #include<SMESH_IndexedDataMapOfShapeIndexedMapOfShape.hxx>
 #include<SMESH_IndexedMap.hxx>
@@ -201,6 +199,37 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<TopTools_ShapeSet.hxx>
 #include<TopTools_StdMapNodeOfMapOfOrientedShape.hxx>
 #include<TopTools_StdMapNodeOfMapOfShape.hxx>
+#include<SMDS_EdgePosition.hxx>
+#include<SMDS_ElemIterator.hxx>
+#include<SMDS_FaceOfEdges.hxx>
+#include<SMDS_FaceOfNodes.hxx>
+#include<SMDS_FacePosition.hxx>
+#include<SMDS_Iterator.hxx>
+#include<SMDS_IteratorOfElements.hxx>
+#include<SMDS_Mesh.hxx>
+#include<SMDS_Mesh0DElement.hxx>
+#include<SMDS_MeshEdge.hxx>
+#include<SMDS_MeshElement.hxx>
+#include<SMDS_MeshElementIDFactory.hxx>
+#include<SMDS_MeshFace.hxx>
+#include<SMDS_MeshGroup.hxx>
+#include<SMDS_MeshIDFactory.hxx>
+#include<SMDS_MeshInfo.hxx>
+#include<SMDS_MeshNode.hxx>
+#include<SMDS_MeshObject.hxx>
+#include<SMDS_MeshVolume.hxx>
+#include<SMDS_PolygonalFaceOfNodes.hxx>
+#include<SMDS_PolyhedralVolumeOfNodes.hxx>
+#include<SMDS_Position.hxx>
+#include<SMDS_QuadraticEdge.hxx>
+#include<SMDS_QuadraticFaceOfNodes.hxx>
+#include<SMDS_QuadraticVolumeOfNodes.hxx>
+#include<SMDS_SpacePosition.hxx>
+#include<SMDS_TypeOfPosition.hxx>
+#include<SMDS_VertexPosition.hxx>
+#include<SMDS_VolumeOfFaces.hxx>
+#include<SMDS_VolumeOfNodes.hxx>
+#include<SMDS_VolumeTool.hxx>
 #include<MeshVS_Array1OfSequenceOfInteger.hxx>
 #include<MeshVS_BuilderPriority.hxx>
 #include<MeshVS_ColorHasher.hxx>
@@ -465,37 +494,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<TColStd_StdMapNodeOfMapOfInteger.hxx>
 #include<TColStd_StdMapNodeOfMapOfReal.hxx>
 #include<TColStd_StdMapNodeOfMapOfTransient.hxx>
-#include<SMDS_EdgePosition.hxx>
-#include<SMDS_ElemIterator.hxx>
-#include<SMDS_FaceOfEdges.hxx>
-#include<SMDS_FaceOfNodes.hxx>
-#include<SMDS_FacePosition.hxx>
-#include<SMDS_Iterator.hxx>
-#include<SMDS_IteratorOfElements.hxx>
-#include<SMDS_Mesh.hxx>
-#include<SMDS_Mesh0DElement.hxx>
-#include<SMDS_MeshEdge.hxx>
-#include<SMDS_MeshElement.hxx>
-#include<SMDS_MeshElementIDFactory.hxx>
-#include<SMDS_MeshFace.hxx>
-#include<SMDS_MeshGroup.hxx>
-#include<SMDS_MeshIDFactory.hxx>
-#include<SMDS_MeshInfo.hxx>
-#include<SMDS_MeshNode.hxx>
-#include<SMDS_MeshObject.hxx>
-#include<SMDS_MeshVolume.hxx>
-#include<SMDS_PolygonalFaceOfNodes.hxx>
-#include<SMDS_PolyhedralVolumeOfNodes.hxx>
-#include<SMDS_Position.hxx>
-#include<SMDS_QuadraticEdge.hxx>
-#include<SMDS_QuadraticFaceOfNodes.hxx>
-#include<SMDS_QuadraticVolumeOfNodes.hxx>
-#include<SMDS_SpacePosition.hxx>
-#include<SMDS_TypeOfPosition.hxx>
-#include<SMDS_VertexPosition.hxx>
-#include<SMDS_VolumeOfFaces.hxx>
-#include<SMDS_VolumeOfNodes.hxx>
-#include<SMDS_VolumeTool.hxx>
 #include<Geom_Axis1Placement.hxx>
 #include<Geom_Axis2Placement.hxx>
 #include<Geom_AxisPlacement.hxx>
@@ -1780,8 +1778,8 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 %import TopAbs.i
 %import SMESHDS.i
 %import TopTools.i
+%import SMDS.i
 %import MeshVS.i
 %import Standard.i
 %import TColStd.i
-%import SMDS.i
 %import Geom.i
