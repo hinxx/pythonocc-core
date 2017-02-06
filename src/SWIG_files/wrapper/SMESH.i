@@ -100,54 +100,6 @@ enum MeshDimension {
 
 /* end public enums declaration */
 
-%nodefaultctor SMESH_ComputeError;
-class SMESH_ComputeError {
-	public:
-		int myName;
-		std::string myComment;
-		std::list< SMDS_MeshElement *> myBadElements;
-		%feature("compactdefaultargs") New;
-		%feature("autodoc", "	* //!< to explain COMPERR_BAD_INPUT_MESH
-
-	:param error: default value is COMPERR_OK
-	:type error: int
-	:param comment: default value is ""
-	:type comment: std::string
-	:param algo: default value is 0
-	:type algo: SMESH_Algo *
-	:rtype: SMESH_ComputeErrorPtr
-") New;
-		static SMESH_ComputeErrorPtr New (int error = COMPERR_OK,std::string comment = "",const SMESH_Algo * algo = 0);
-		%feature("compactdefaultargs") SMESH_ComputeError;
-		%feature("autodoc", "	:param error: default value is COMPERR_OK
-	:type error: int
-	:param comment: default value is ""
-	:type comment: std::string
-	:param algo: default value is 0
-	:type algo: SMESH_Algo *
-	:rtype: None
-") SMESH_ComputeError;
-		 SMESH_ComputeError (int error = COMPERR_OK,std::string comment = "",const SMESH_Algo * algo = 0);
-		%feature("compactdefaultargs") IsOK;
-		%feature("autodoc", "	:rtype: bool
-") IsOK;
-		bool IsOK ();
-		%feature("compactdefaultargs") IsCommon;
-		%feature("autodoc", "	:rtype: bool
-") IsCommon;
-		bool IsCommon ();
-		%feature("compactdefaultargs") CommonName;
-		%feature("autodoc", "	:rtype: inline std::string
-") CommonName;
-		inline std::string CommonName ();
-};
-
-
-%extend SMESH_ComputeError {
-	%pythoncode {
-	__repr__ = _dumps_object
-	}
-};
 %nodefaultctor SMESH_ElementSearcher;
 class SMESH_ElementSearcher {
 	public:
@@ -374,25 +326,6 @@ class SMESH_Group {
 
 
 %extend SMESH_Group {
-	%pythoncode {
-	__repr__ = _dumps_object
-	}
-};
-%nodefaultctor SMESH_HypoPredicate;
-class SMESH_HypoPredicate {
-	public:
-		%feature("compactdefaultargs") IsOk;
-		%feature("autodoc", "	:param aHyp:
-	:type aHyp: SMESH_Hypothesis *
-	:param aShape:
-	:type aShape: TopoDS_Shape &
-	:rtype: bool
-") IsOk;
-		bool IsOk (const SMESH_Hypothesis * aHyp,const TopoDS_Shape & aShape);
-};
-
-
-%extend SMESH_HypoPredicate {
 	%pythoncode {
 	__repr__ = _dumps_object
 	}
@@ -917,6 +850,549 @@ typedef boost::shared_ptr<SMDS_Iterator <SMESH_Group *>> GroupIteratorPtr;
 
 
 %extend SMESH_Mesh {
+	%pythoncode {
+	__repr__ = _dumps_object
+	}
+};
+%nodefaultctor SMESH_MeshEditor;
+class SMESH_MeshEditor {
+	public:
+typedef std::auto_ptr<std::list <int>> PGroupIDs;
+typedef std::list<std::list<const SMDS_MeshNode *>> TListOfListOfNodes;
+typedef std::list<std::list<int>> TListOfListOfElementsID;
+/* public enums */
+enum SmoothMethod {
+	LAPLACIAN = 0,
+	CENTROIDAL = 1,
+};
+
+enum ExtrusionFlags {
+	EXTRUSION_FLAG_BOUNDARY = 1,
+	EXTRUSION_FLAG_SEW = 2,
+};
+
+enum Extrusion_Error {
+	EXTR_OK = 0,
+	EXTR_NO_ELEMENTS = 1,
+	EXTR_PATH_NOT_EDGE = 2,
+	EXTR_BAD_PATH_SHAPE = 3,
+	EXTR_BAD_STARTING_NODE = 4,
+	EXTR_BAD_ANGLES_NUMBER = 5,
+	EXTR_CANT_GET_TANGENT = 6,
+};
+
+enum Sew_Error {
+	SEW_OK = 0,
+	SEW_BORDER1_NOT_FOUND = 1,
+	SEW_BORDER2_NOT_FOUND = 2,
+	SEW_BOTH_BORDERS_NOT_FOUND = 3,
+	SEW_BAD_SIDE_NODES = 4,
+	SEW_VOLUMES_TO_SPLIT = 5,
+	SEW_DIFF_NB_OF_ELEMENTS = 6,
+	SEW_TOPO_DIFF_SETS_OF_ELEMENTS = 7,
+	SEW_BAD_SIDE1_NODES = 8,
+	SEW_BAD_SIDE2_NODES = 9,
+	SEW_INTERNAL_ERROR = 10,
+};
+
+/* end public enums declaration */
+
+		%feature("compactdefaultargs") SMESH_MeshEditor;
+		%feature("autodoc", "	:param theMesh:
+	:type theMesh: SMESH_Mesh *
+	:rtype: None
+") SMESH_MeshEditor;
+		 SMESH_MeshEditor (SMESH_Mesh * theMesh);
+		%feature("compactdefaultargs") AddElement;
+		%feature("autodoc", "	* /*! * \brief Add element */
+
+	:param nodes:
+	:type nodes: std::vector< SMDS_MeshNode *> &
+	:param type:
+	:type type: SMDSAbs_ElementType
+	:param isPoly:
+	:type isPoly: bool
+	:param ID: default value is 0
+	:type ID: int
+	:rtype: SMDS_MeshElement *
+") AddElement;
+		SMDS_MeshElement * AddElement (const std::vector<const SMDS_MeshNode *> & nodes,const SMDSAbs_ElementType type,const bool isPoly,const int ID = 0);
+		%feature("compactdefaultargs") AddElement;
+		%feature("autodoc", "	* /*! * \brief Add element */
+
+	:param nodeIDs:
+	:type nodeIDs: std::vector<int> &
+	:param type:
+	:type type: SMDSAbs_ElementType
+	:param isPoly:
+	:type isPoly: bool
+	:param ID: default value is 0
+	:type ID: int
+	:rtype: SMDS_MeshElement *
+") AddElement;
+		SMDS_MeshElement * AddElement (const std::vector<int> & nodeIDs,const SMDSAbs_ElementType type,const bool isPoly,const int ID = 0);
+		%feature("compactdefaultargs") Remove;
+		%feature("autodoc", "	:param theElemIDs:
+	:type theElemIDs: std::list< int> &
+	:param isNodes:
+	:type isNodes: bool
+	:rtype: bool
+") Remove;
+		bool Remove (const std::list< int> & theElemIDs,const bool isNodes);
+		%feature("compactdefaultargs") InverseDiag;
+		%feature("autodoc", "	:param theTria1:
+	:type theTria1: SMDS_MeshElement *
+	:param theTria2:
+	:type theTria2: SMDS_MeshElement *
+	:rtype: bool
+") InverseDiag;
+		bool InverseDiag (const SMDS_MeshElement * theTria1,const SMDS_MeshElement * theTria2);
+		%feature("compactdefaultargs") InverseDiag;
+		%feature("autodoc", "	:param theNode1:
+	:type theNode1: SMDS_MeshNode *
+	:param theNode2:
+	:type theNode2: SMDS_MeshNode *
+	:rtype: bool
+") InverseDiag;
+		bool InverseDiag (const SMDS_MeshNode * theNode1,const SMDS_MeshNode * theNode2);
+		%feature("compactdefaultargs") DeleteDiag;
+		%feature("autodoc", "	:param theNode1:
+	:type theNode1: SMDS_MeshNode *
+	:param theNode2:
+	:type theNode2: SMDS_MeshNode *
+	:rtype: bool
+") DeleteDiag;
+		bool DeleteDiag (const SMDS_MeshNode * theNode1,const SMDS_MeshNode * theNode2);
+		%feature("compactdefaultargs") Reorient;
+		%feature("autodoc", "	:param theElement:
+	:type theElement: SMDS_MeshElement *
+	:rtype: bool
+") Reorient;
+		bool Reorient (const SMDS_MeshElement * theElement);
+		%feature("compactdefaultargs") TriToQuad;
+		%feature("autodoc", "	* /*! * \brief Fuse neighbour triangles into quadrangles. * \param theElems - The triangles to be fused. * \param theCriterion - Is used to choose a neighbour to fuse with. * \param theMaxAngle - Is a max angle between element normals at which fusion *  is still performed; theMaxAngle is mesured in radians. * etval bool - Success or not. */
+
+	:param theElems:
+	:type theElems: TIDSortedElemSet &
+	:param theCriterion:
+	:type theCriterion: SMESH::Controls::NumericalFunctorPtr
+	:param theMaxAngle:
+	:type theMaxAngle: double
+	:rtype: bool
+") TriToQuad;
+		bool TriToQuad (TIDSortedElemSet & theElems,SMESH::Controls::NumericalFunctorPtr theCriterion,const double theMaxAngle);
+		%feature("compactdefaultargs") QuadToTri;
+		%feature("autodoc", "	* /*! * \brief Split quadrangles into triangles. * \param theElems - The faces to be splitted. * \param theCriterion - Is used to choose a diagonal for splitting. * etval bool - Success or not. */
+
+	:param theElems:
+	:type theElems: TIDSortedElemSet &
+	:param theCriterion:
+	:type theCriterion: SMESH::Controls::NumericalFunctorPtr
+	:rtype: bool
+") QuadToTri;
+		bool QuadToTri (TIDSortedElemSet & theElems,SMESH::Controls::NumericalFunctorPtr theCriterion);
+		%feature("compactdefaultargs") QuadToTri;
+		%feature("autodoc", "	* /*! * \brief Split quadrangles into triangles. * \param theElems - The faces to be splitted. * \param the13Diag - Is used to choose a diagonal for splitting. * etval bool - Success or not. */
+
+	:param theElems:
+	:type theElems: TIDSortedElemSet &
+	:param the13Diag:
+	:type the13Diag: bool
+	:rtype: bool
+") QuadToTri;
+		bool QuadToTri (TIDSortedElemSet & theElems,const bool the13Diag);
+		%feature("compactdefaultargs") BestSplit;
+		%feature("autodoc", "	* /*! * \brief Find better diagonal for splitting. * \param theQuad - The face to find better splitting of. * \param theCriterion - Is used to choose a diagonal for splitting. * etval int - 1 for 1-3 diagonal, 2 for 2-4, -1 - for errors. */
+
+	:param theQuad:
+	:type theQuad: SMDS_MeshElement *
+	:param theCriterion:
+	:type theCriterion: SMESH::Controls::NumericalFunctorPtr
+	:rtype: int
+") BestSplit;
+		int BestSplit (const SMDS_MeshElement * theQuad,SMESH::Controls::NumericalFunctorPtr theCriterion);
+		%feature("compactdefaultargs") Smooth;
+		%feature("autodoc", "	:param theElements:
+	:type theElements: TIDSortedElemSet &
+	:param theFixedNodes:
+	:type theFixedNodes: std::set< SMDS_MeshNode *> &
+	:param theSmoothMethod:
+	:type theSmoothMethod: SmoothMethod
+	:param theNbIterations:
+	:type theNbIterations: int
+	:param theTgtAspectRatio: default value is 1.0
+	:type theTgtAspectRatio: double
+	:param the2D: default value is true
+	:type the2D: bool
+	:rtype: None
+") Smooth;
+		void Smooth (TIDSortedElemSet & theElements,std::set<const SMDS_MeshNode *> & theFixedNodes,const SmoothMethod theSmoothMethod,const int theNbIterations,double theTgtAspectRatio = 1.0,const bool the2D = true);
+		%feature("compactdefaultargs") CreateNode;
+		%feature("autodoc", "	* /*! * Create new node in the mesh with given coordinates * (auxilary for advanced extrusion) */
+
+	:param x:
+	:type x: double
+	:param y:
+	:type y: double
+	:param z:
+	:type z: double
+	:param tolnode:
+	:type tolnode: double
+	:param aNodes:
+	:type aNodes: SMESH_SequenceOfNode &
+	:rtype: SMDS_MeshNode *
+") CreateNode;
+		const SMDS_MeshNode * CreateNode (const double x,const double y,const double z,const double tolnode,SMESH_SequenceOfNode & aNodes);
+		%feature("compactdefaultargs") ExtrusionAlongTrack;
+		%feature("autodoc", "	:param theElements:
+	:type theElements: TIDSortedElemSet &
+	:param theTrackPattern:
+	:type theTrackPattern: SMESH_subMesh *
+	:param theNodeStart:
+	:type theNodeStart: SMDS_MeshNode *
+	:param theHasAngles:
+	:type theHasAngles: bool
+	:param theAngles:
+	:type theAngles: std::list<double> &
+	:param theLinearVariation:
+	:type theLinearVariation: bool
+	:param theHasRefPoint:
+	:type theHasRefPoint: bool
+	:param theRefPoint:
+	:type theRefPoint: gp_Pnt
+	:param theMakeGroups:
+	:type theMakeGroups: bool
+	:rtype: Extrusion_Error
+") ExtrusionAlongTrack;
+		Extrusion_Error ExtrusionAlongTrack (TIDSortedElemSet & theElements,SMESH_subMesh * theTrackPattern,const SMDS_MeshNode * theNodeStart,const bool theHasAngles,std::list<double> & theAngles,const bool theLinearVariation,const bool theHasRefPoint,const gp_Pnt & theRefPoint,const bool theMakeGroups);
+		%feature("compactdefaultargs") ExtrusionAlongTrack;
+		%feature("autodoc", "	:param theElements:
+	:type theElements: TIDSortedElemSet &
+	:param theTrackPattern:
+	:type theTrackPattern: SMESH_Mesh *
+	:param theNodeStart:
+	:type theNodeStart: SMDS_MeshNode *
+	:param theHasAngles:
+	:type theHasAngles: bool
+	:param theAngles:
+	:type theAngles: std::list<double> &
+	:param theLinearVariation:
+	:type theLinearVariation: bool
+	:param theHasRefPoint:
+	:type theHasRefPoint: bool
+	:param theRefPoint:
+	:type theRefPoint: gp_Pnt
+	:param theMakeGroups:
+	:type theMakeGroups: bool
+	:rtype: Extrusion_Error
+") ExtrusionAlongTrack;
+		Extrusion_Error ExtrusionAlongTrack (TIDSortedElemSet & theElements,SMESH_Mesh * theTrackPattern,const SMDS_MeshNode * theNodeStart,const bool theHasAngles,std::list<double> & theAngles,const bool theLinearVariation,const bool theHasRefPoint,const gp_Pnt & theRefPoint,const bool theMakeGroups);
+		%feature("compactdefaultargs") FindCoincidentNodes;
+		%feature("autodoc", "	:param theNodes:
+	:type theNodes: std::set< SMDS_MeshNode *> &
+	:param theTolerance:
+	:type theTolerance: double
+	:param theGroupsOfNodes:
+	:type theGroupsOfNodes: TListOfListOfNodes &
+	:rtype: None
+") FindCoincidentNodes;
+		void FindCoincidentNodes (std::set<const SMDS_MeshNode *> & theNodes,const double theTolerance,TListOfListOfNodes & theGroupsOfNodes);
+		%feature("compactdefaultargs") GetNodeSearcher;
+		%feature("autodoc", "	* /*! * \brief Return SMESH_NodeSearcher */
+
+	:rtype: SMESH_NodeSearcher *
+") GetNodeSearcher;
+		SMESH_NodeSearcher * GetNodeSearcher ();
+		%feature("compactdefaultargs") GetElementSearcher;
+		%feature("autodoc", "	* /*! * \brief Return SMESH_ElementSearcher */
+
+	:rtype: SMESH_ElementSearcher *
+") GetElementSearcher;
+		SMESH_ElementSearcher * GetElementSearcher ();
+		%feature("compactdefaultargs") isOut;
+		%feature("autodoc", "	* /*! * \brief Return true if the point is IN or ON of the element */
+
+	:param element:
+	:type element: SMDS_MeshElement *
+	:param point:
+	:type point: gp_Pnt
+	:param tol:
+	:type tol: double
+	:rtype: bool
+") isOut;
+		static bool isOut (const SMDS_MeshElement * element,const gp_Pnt & point,double tol);
+		%feature("compactdefaultargs") SimplifyFace;
+		%feature("autodoc", "	:param faceNodes:
+	:type faceNodes: std::vector< SMDS_MeshNode *>
+	:param poly_nodes:
+	:type poly_nodes: std::vector< SMDS_MeshNode *> &
+	:param quantities:
+	:type quantities: std::vector<int> &
+	:rtype: int
+") SimplifyFace;
+		int SimplifyFace (const std::vector<const SMDS_MeshNode *> faceNodes,std::vector<const SMDS_MeshNode *> & poly_nodes,std::vector<int> & quantities);
+		%feature("compactdefaultargs") MergeNodes;
+		%feature("autodoc", "	:param theNodeGroups:
+	:type theNodeGroups: TListOfListOfNodes &
+	:rtype: None
+") MergeNodes;
+		void MergeNodes (TListOfListOfNodes & theNodeGroups);
+		%feature("compactdefaultargs") FindEqualElements;
+		%feature("autodoc", "	:param theElements:
+	:type theElements: std::set< SMDS_MeshElement *> &
+	:param theGroupsOfElementsID:
+	:type theGroupsOfElementsID: TListOfListOfElementsID &
+	:rtype: None
+") FindEqualElements;
+		void FindEqualElements (std::set<const SMDS_MeshElement *> & theElements,TListOfListOfElementsID & theGroupsOfElementsID);
+		%feature("compactdefaultargs") MergeElements;
+		%feature("autodoc", "	:param theGroupsOfElementsID:
+	:type theGroupsOfElementsID: TListOfListOfElementsID &
+	:rtype: None
+") MergeElements;
+		void MergeElements (TListOfListOfElementsID & theGroupsOfElementsID);
+		%feature("compactdefaultargs") MergeEqualElements;
+		%feature("autodoc", "	:rtype: None
+") MergeEqualElements;
+		void MergeEqualElements ();
+		%feature("compactdefaultargs") CheckFreeBorderNodes;
+		%feature("autodoc", "	:param theNode1:
+	:type theNode1: SMDS_MeshNode *
+	:param theNode2:
+	:type theNode2: SMDS_MeshNode *
+	:param theNode3: default value is 0
+	:type theNode3: SMDS_MeshNode *
+	:rtype: bool
+") CheckFreeBorderNodes;
+		static bool CheckFreeBorderNodes (const SMDS_MeshNode * theNode1,const SMDS_MeshNode * theNode2,const SMDS_MeshNode * theNode3 = 0);
+		%feature("compactdefaultargs") FindFreeBorder;
+		%feature("autodoc", "	:param theFirstNode:
+	:type theFirstNode: SMDS_MeshNode *
+	:param theSecondNode:
+	:type theSecondNode: SMDS_MeshNode *
+	:param theLastNode:
+	:type theLastNode: SMDS_MeshNode *
+	:param theNodes:
+	:type theNodes: std::list<  SMDS_MeshNode *> &
+	:param theFaces:
+	:type theFaces: std::list<  SMDS_MeshElement *> &
+	:rtype: bool
+") FindFreeBorder;
+		static bool FindFreeBorder (const SMDS_MeshNode * theFirstNode,const SMDS_MeshNode * theSecondNode,const SMDS_MeshNode * theLastNode,std::list< const SMDS_MeshNode *> & theNodes,std::list< const SMDS_MeshElement *> & theFaces);
+		%feature("compactdefaultargs") SewFreeBorder;
+		%feature("autodoc", "	:param theBorderFirstNode:
+	:type theBorderFirstNode: SMDS_MeshNode *
+	:param theBorderSecondNode:
+	:type theBorderSecondNode: SMDS_MeshNode *
+	:param theBorderLastNode:
+	:type theBorderLastNode: SMDS_MeshNode *
+	:param theSide2FirstNode:
+	:type theSide2FirstNode: SMDS_MeshNode *
+	:param theSide2SecondNode:
+	:type theSide2SecondNode: SMDS_MeshNode *
+	:param theSide2ThirdNode: default value is 0
+	:type theSide2ThirdNode: SMDS_MeshNode *
+	:param theSide2IsFreeBorder: default value is true
+	:type theSide2IsFreeBorder: bool
+	:param toCreatePolygons: default value is false
+	:type toCreatePolygons: bool
+	:param toCreatePolyedrs: default value is false
+	:type toCreatePolyedrs: bool
+	:rtype: Sew_Error
+") SewFreeBorder;
+		Sew_Error SewFreeBorder (const SMDS_MeshNode * theBorderFirstNode,const SMDS_MeshNode * theBorderSecondNode,const SMDS_MeshNode * theBorderLastNode,const SMDS_MeshNode * theSide2FirstNode,const SMDS_MeshNode * theSide2SecondNode,const SMDS_MeshNode * theSide2ThirdNode = 0,const bool theSide2IsFreeBorder = true,const bool toCreatePolygons = false,const bool toCreatePolyedrs = false);
+		%feature("compactdefaultargs") SewSideElements;
+		%feature("autodoc", "	:param theSide1:
+	:type theSide1: TIDSortedElemSet &
+	:param theSide2:
+	:type theSide2: TIDSortedElemSet &
+	:param theFirstNode1ToMerge:
+	:type theFirstNode1ToMerge: SMDS_MeshNode *
+	:param theFirstNode2ToMerge:
+	:type theFirstNode2ToMerge: SMDS_MeshNode *
+	:param theSecondNode1ToMerge:
+	:type theSecondNode1ToMerge: SMDS_MeshNode *
+	:param theSecondNode2ToMerge:
+	:type theSecondNode2ToMerge: SMDS_MeshNode *
+	:rtype: Sew_Error
+") SewSideElements;
+		Sew_Error SewSideElements (TIDSortedElemSet & theSide1,TIDSortedElemSet & theSide2,const SMDS_MeshNode * theFirstNode1ToMerge,const SMDS_MeshNode * theFirstNode2ToMerge,const SMDS_MeshNode * theSecondNode1ToMerge,const SMDS_MeshNode * theSecondNode2ToMerge);
+		%feature("compactdefaultargs") InsertNodesIntoLink;
+		%feature("autodoc", "	:param theFace:
+	:type theFace: SMDS_MeshElement *
+	:param theBetweenNode1:
+	:type theBetweenNode1: SMDS_MeshNode *
+	:param theBetweenNode2:
+	:type theBetweenNode2: SMDS_MeshNode *
+	:param theNodesToInsert:
+	:type theNodesToInsert: std::list< SMDS_MeshNode *> &
+	:param toCreatePoly: default value is false
+	:type toCreatePoly: bool
+	:rtype: None
+") InsertNodesIntoLink;
+		void InsertNodesIntoLink (const SMDS_MeshElement * theFace,const SMDS_MeshNode * theBetweenNode1,const SMDS_MeshNode * theBetweenNode2,std::list<const SMDS_MeshNode *> & theNodesToInsert,const bool toCreatePoly = false);
+		%feature("compactdefaultargs") UpdateVolumes;
+		%feature("autodoc", "	:param theBetweenNode1:
+	:type theBetweenNode1: SMDS_MeshNode *
+	:param theBetweenNode2:
+	:type theBetweenNode2: SMDS_MeshNode *
+	:param theNodesToInsert:
+	:type theNodesToInsert: std::list< SMDS_MeshNode *> &
+	:rtype: None
+") UpdateVolumes;
+		void UpdateVolumes (const SMDS_MeshNode * theBetweenNode1,const SMDS_MeshNode * theBetweenNode2,std::list<const SMDS_MeshNode *> & theNodesToInsert);
+		%feature("compactdefaultargs") ConvertToQuadratic;
+		%feature("autodoc", "	:param theForce3d:
+	:type theForce3d: bool
+	:rtype: None
+") ConvertToQuadratic;
+		void ConvertToQuadratic (const bool theForce3d);
+		%feature("compactdefaultargs") ConvertFromQuadratic;
+		%feature("autodoc", "	:rtype: bool
+") ConvertFromQuadratic;
+		bool ConvertFromQuadratic ();
+		%feature("compactdefaultargs") AddToSameGroups;
+		%feature("autodoc", "	:param elemToAdd:
+	:type elemToAdd: SMDS_MeshElement *
+	:param elemInGroups:
+	:type elemInGroups: SMDS_MeshElement *
+	:param aMesh:
+	:type aMesh: SMESHDS_Mesh *
+	:rtype: void
+") AddToSameGroups;
+		static void AddToSameGroups (const SMDS_MeshElement * elemToAdd,const SMDS_MeshElement * elemInGroups,SMESHDS_Mesh * aMesh);
+		%feature("compactdefaultargs") RemoveElemFromGroups;
+		%feature("autodoc", "	:param element:
+	:type element: SMDS_MeshElement *
+	:param aMesh:
+	:type aMesh: SMESHDS_Mesh *
+	:rtype: void
+") RemoveElemFromGroups;
+		static void RemoveElemFromGroups (const SMDS_MeshElement * element,SMESHDS_Mesh * aMesh);
+		%feature("compactdefaultargs") ReplaceElemInGroups;
+		%feature("autodoc", "	:param elemToRm:
+	:type elemToRm: SMDS_MeshElement *
+	:param elemToAdd:
+	:type elemToAdd: SMDS_MeshElement *
+	:param aMesh:
+	:type aMesh: SMESHDS_Mesh *
+	:rtype: void
+") ReplaceElemInGroups;
+		static void ReplaceElemInGroups (const SMDS_MeshElement * elemToRm,const SMDS_MeshElement * elemToAdd,SMESHDS_Mesh * aMesh);
+		%feature("compactdefaultargs") GetLinkedNodes;
+		%feature("autodoc", "	* /*! * \brief Return nodes linked to the given one in elements of the type */
+
+	:param node:
+	:type node: SMDS_MeshNode *
+	:param linkedNodes:
+	:type linkedNodes: TIDSortedElemSet &
+	:param type: default value is SMDSAbs_All
+	:type type: SMDSAbs_ElementType
+	:rtype: void
+") GetLinkedNodes;
+		static void GetLinkedNodes (const SMDS_MeshNode * node,TIDSortedElemSet & linkedNodes,SMDSAbs_ElementType type = SMDSAbs_All);
+		%feature("compactdefaultargs") FindFaceInSet;
+		%feature("autodoc", "	:param n1:
+	:type n1: SMDS_MeshNode *
+	:param n2:
+	:type n2: SMDS_MeshNode *
+	:param elemSet:
+	:type elemSet: TIDSortedElemSet &
+	:param avoidSet:
+	:type avoidSet: TIDSortedElemSet &
+	:rtype: SMDS_MeshElement *
+") FindFaceInSet;
+		static const SMDS_MeshElement * FindFaceInSet (const SMDS_MeshNode * n1,const SMDS_MeshNode * n2,const TIDSortedElemSet & elemSet,const TIDSortedElemSet & avoidSet);
+		%feature("compactdefaultargs") FindMatchingNodes;
+		%feature("autodoc", "	* /*! * \brief Find corresponding nodes in two sets of faces * \param theSide1 - first face set * \param theSide2 - second first face * \param theFirstNode1 - a boundary node of set 1 * \param theFirstNode2 - a node of set 2 corresponding to theFirstNode1 * \param theSecondNode1 - a boundary node of set 1 linked with theFirstNode1 * \param theSecondNode2 - a node of set 2 corresponding to theSecondNode1 * \param nReplaceMap - output map of corresponding nodes * etval Sew_Error - is a success or not */
+
+	:param theSide1:
+	:type theSide1: std::set< SMDS_MeshElement *> &
+	:param theSide2:
+	:type theSide2: std::set< SMDS_MeshElement *> &
+	:param theFirstNode1:
+	:type theFirstNode1: SMDS_MeshNode *
+	:param theFirstNode2:
+	:type theFirstNode2: SMDS_MeshNode *
+	:param theSecondNode1:
+	:type theSecondNode1: SMDS_MeshNode *
+	:param theSecondNode2:
+	:type theSecondNode2: SMDS_MeshNode *
+	:param nReplaceMap:
+	:type nReplaceMap: TNodeNodeMap &
+	:rtype: Sew_Error
+") FindMatchingNodes;
+		static Sew_Error FindMatchingNodes (std::set<const SMDS_MeshElement *> & theSide1,std::set<const SMDS_MeshElement *> & theSide2,const SMDS_MeshNode * theFirstNode1,const SMDS_MeshNode * theFirstNode2,const SMDS_MeshNode * theSecondNode1,const SMDS_MeshNode * theSecondNode2,TNodeNodeMap & nReplaceMap);
+		%feature("compactdefaultargs") IsMedium;
+		%feature("autodoc", "	* /*! * \brief Returns true if given node is medium * \param n - node to check * \param typeToCheck - type of elements containing the node to ask about node status * etval bool - check result */
+
+	:param node:
+	:type node: SMDS_MeshNode *
+	:param typeToCheck: default value is SMDSAbs_All
+	:type typeToCheck: SMDSAbs_ElementType
+	:rtype: bool
+") IsMedium;
+		static bool IsMedium (const SMDS_MeshNode * node,const SMDSAbs_ElementType typeToCheck = SMDSAbs_All);
+		%feature("compactdefaultargs") FindShape;
+		%feature("autodoc", "	:param theElem:
+	:type theElem: SMDS_MeshElement *
+	:rtype: int
+") FindShape;
+		int FindShape (const SMDS_MeshElement * theElem);
+		%feature("compactdefaultargs") GetMesh;
+		%feature("autodoc", "	:rtype: SMESH_Mesh *
+") GetMesh;
+		SMESH_Mesh * GetMesh ();
+		%feature("compactdefaultargs") GetMeshDS;
+		%feature("autodoc", "	:rtype: SMESHDS_Mesh *
+") GetMeshDS;
+		SMESHDS_Mesh * GetMeshDS ();
+		%feature("compactdefaultargs") GetLastCreatedNodes;
+		%feature("autodoc", "	:rtype: SMESH_SequenceOfElemPtr
+") GetLastCreatedNodes;
+		const SMESH_SequenceOfElemPtr & GetLastCreatedNodes ();
+		%feature("compactdefaultargs") GetLastCreatedElems;
+		%feature("autodoc", "	:rtype: SMESH_SequenceOfElemPtr
+") GetLastCreatedElems;
+		const SMESH_SequenceOfElemPtr & GetLastCreatedElems ();
+		%feature("compactdefaultargs") DoubleNodes;
+		%feature("autodoc", "	:param theListOfNodes:
+	:type theListOfNodes: std::list< int> &
+	:param theListOfModifiedElems:
+	:type theListOfModifiedElems: std::list< int> &
+	:rtype: bool
+") DoubleNodes;
+		bool DoubleNodes (const std::list< int> & theListOfNodes,const std::list< int> & theListOfModifiedElems);
+		%feature("compactdefaultargs") DoubleNodes;
+		%feature("autodoc", "	:param theElems:
+	:type theElems: TIDSortedElemSet &
+	:param theNodesNot:
+	:type theNodesNot: TIDSortedElemSet &
+	:param theAffectedElems:
+	:type theAffectedElems: TIDSortedElemSet &
+	:rtype: bool
+") DoubleNodes;
+		bool DoubleNodes (const TIDSortedElemSet & theElems,const TIDSortedElemSet & theNodesNot,const TIDSortedElemSet & theAffectedElems);
+		%feature("compactdefaultargs") DoubleNodesInRegion;
+		%feature("autodoc", "	:param theElems:
+	:type theElems: TIDSortedElemSet &
+	:param theNodesNot:
+	:type theNodesNot: TIDSortedElemSet &
+	:param theShape:
+	:type theShape: TopoDS_Shape &
+	:rtype: bool
+") DoubleNodesInRegion;
+		bool DoubleNodesInRegion (const TIDSortedElemSet & theElems,const TIDSortedElemSet & theNodesNot,const TopoDS_Shape & theShape);
+		%feature("compactdefaultargs") Make2DMeshFrom3D;
+		%feature("autodoc", "	* /*! * \brief Generated skin mesh (containing 2D cells) from 3D mesh * The created 2D mesh elements based on nodes of free faces of boundary volumes * eturn True if operation has been completed successfully, False otherwise */
+
+	:rtype: bool
+") Make2DMeshFrom3D;
+		bool Make2DMeshFrom3D ();
+};
+
+
+%extend SMESH_MeshEditor {
 	%pythoncode {
 	__repr__ = _dumps_object
 	}
@@ -2130,253 +2606,6 @@ class SMESH_subMeshEventListenerData {
 
 
 %extend SMESH_subMeshEventListenerData {
-	%pythoncode {
-	__repr__ = _dumps_object
-	}
-};
-%nodefaultctor SMESH_HypoFilter;
-class SMESH_HypoFilter : public SMESH_HypoPredicate {
-	public:
-/* public enums */
-enum Logical {
-	AND = 0,
-	AND_NOT = 1,
-	OR = 2,
-	OR_NOT = 3,
-};
-
-enum Comparison {
-	EQUAL = 0,
-	NOT_EQUAL = 1,
-	MORE = 2,
-	LESS = 3,
-};
-
-/* end public enums declaration */
-
-		%feature("compactdefaultargs") SMESH_HypoFilter;
-		%feature("autodoc", "	:rtype: None
-") SMESH_HypoFilter;
-		 SMESH_HypoFilter ();
-		%feature("compactdefaultargs") SMESH_HypoFilter;
-		%feature("autodoc", "	:param aPredicate:
-	:type aPredicate: SMESH_HypoPredicate *
-	:param notNagate: default value is true
-	:type notNagate: bool
-	:rtype: None
-") SMESH_HypoFilter;
-		 SMESH_HypoFilter (SMESH_HypoPredicate * aPredicate,bool notNagate = true);
-		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "	:param aPredicate:
-	:type aPredicate: SMESH_HypoPredicate *
-	:param notNagate: default value is true
-	:type notNagate: bool
-	:rtype: SMESH_HypoFilter
-") Init;
-		SMESH_HypoFilter & Init (SMESH_HypoPredicate * aPredicate,bool notNagate = true);
-		%feature("compactdefaultargs") And;
-		%feature("autodoc", "	:param aPredicate:
-	:type aPredicate: SMESH_HypoPredicate *
-	:rtype: SMESH_HypoFilter
-") And;
-		SMESH_HypoFilter & And (SMESH_HypoPredicate * aPredicate);
-		%feature("compactdefaultargs") AndNot;
-		%feature("autodoc", "	:param aPredicate:
-	:type aPredicate: SMESH_HypoPredicate *
-	:rtype: SMESH_HypoFilter
-") AndNot;
-		SMESH_HypoFilter & AndNot (SMESH_HypoPredicate * aPredicate);
-		%feature("compactdefaultargs") Or;
-		%feature("autodoc", "	:param aPredicate:
-	:type aPredicate: SMESH_HypoPredicate *
-	:rtype: SMESH_HypoFilter
-") Or;
-		SMESH_HypoFilter & Or (SMESH_HypoPredicate * aPredicate);
-		%feature("compactdefaultargs") OrNot;
-		%feature("autodoc", "	:param aPredicate:
-	:type aPredicate: SMESH_HypoPredicate *
-	:rtype: SMESH_HypoFilter
-") OrNot;
-		SMESH_HypoFilter & OrNot (SMESH_HypoPredicate * aPredicate);
-		%feature("compactdefaultargs") IsAlgo;
-		%feature("autodoc", "	:rtype: SMESH_HypoPredicate *
-") IsAlgo;
-		static SMESH_HypoPredicate * IsAlgo ();
-		%feature("compactdefaultargs") IsAuxiliary;
-		%feature("autodoc", "	:rtype: SMESH_HypoPredicate *
-") IsAuxiliary;
-		static SMESH_HypoPredicate * IsAuxiliary ();
-		%feature("compactdefaultargs") IsApplicableTo;
-		%feature("autodoc", "	:param theShape:
-	:type theShape: TopoDS_Shape &
-	:rtype: SMESH_HypoPredicate *
-") IsApplicableTo;
-		static SMESH_HypoPredicate * IsApplicableTo (const TopoDS_Shape & theShape);
-		%feature("compactdefaultargs") IsAssignedTo;
-		%feature("autodoc", "	:param theShape:
-	:type theShape: TopoDS_Shape &
-	:rtype: SMESH_HypoPredicate *
-") IsAssignedTo;
-		static SMESH_HypoPredicate * IsAssignedTo (const TopoDS_Shape & theShape);
-		%feature("compactdefaultargs") Is;
-		%feature("autodoc", "	:param theHypo:
-	:type theHypo: SMESH_Hypothesis *
-	:rtype: SMESH_HypoPredicate *
-") Is;
-		static SMESH_HypoPredicate * Is (const SMESH_Hypothesis * theHypo);
-		%feature("compactdefaultargs") IsGlobal;
-		%feature("autodoc", "	:param theMainShape:
-	:type theMainShape: TopoDS_Shape &
-	:rtype: SMESH_HypoPredicate *
-") IsGlobal;
-		static SMESH_HypoPredicate * IsGlobal (const TopoDS_Shape & theMainShape);
-		%feature("compactdefaultargs") IsMoreLocalThan;
-		%feature("autodoc", "	:param theShape:
-	:type theShape: TopoDS_Shape &
-	:rtype: SMESH_HypoPredicate *
-") IsMoreLocalThan;
-		static SMESH_HypoPredicate * IsMoreLocalThan (const TopoDS_Shape & theShape);
-		%feature("compactdefaultargs") HasName;
-		%feature("autodoc", "	:param theName:
-	:type theName: std::string &
-	:rtype: SMESH_HypoPredicate *
-") HasName;
-		static SMESH_HypoPredicate * HasName (const std::string & theName);
-		%feature("compactdefaultargs") HasDim;
-		%feature("autodoc", "	:param theDim:
-	:type theDim: int
-	:rtype: SMESH_HypoPredicate *
-") HasDim;
-		static SMESH_HypoPredicate * HasDim (const int theDim);
-		%feature("compactdefaultargs") HasType;
-		%feature("autodoc", "	:param theHypType:
-	:type theHypType: int
-	:rtype: SMESH_HypoPredicate *
-") HasType;
-		static SMESH_HypoPredicate * HasType (const int theHypType);
-		%feature("compactdefaultargs") IsOk;
-		%feature("autodoc", "	* /*! * \brief check aHyp or/and aShape it is assigned to */
-
-	:param aHyp:
-	:type aHyp: SMESH_Hypothesis *
-	:param aShape:
-	:type aShape: TopoDS_Shape &
-	:rtype: bool
-") IsOk;
-		bool IsOk (const SMESH_Hypothesis * aHyp,const TopoDS_Shape & aShape);
-		%feature("compactdefaultargs") IsAny;
-		%feature("autodoc", "	* /*! * \brief return true if contains no predicates */
-
-	:rtype: bool
-") IsAny;
-		bool IsAny ();
-};
-
-
-%extend SMESH_HypoFilter {
-	%pythoncode {
-	__repr__ = _dumps_object
-	}
-};
-%nodefaultctor SMESH_OctreeNode;
-class SMESH_OctreeNode : public SMESH_Octree {
-	public:
-		%feature("compactdefaultargs") SMESH_OctreeNode;
-		%feature("autodoc", "	:param theNodes:
-	:type theNodes: std::set< SMDS_MeshNode *> &
-	:param maxLevel: default value is -1
-	:type maxLevel: int
-	:param maxNbNodes: default value is 5
-	:type maxNbNodes: int
-	:param minBoxSize: default value is 0
-	:type minBoxSize: double
-	:rtype: None
-") SMESH_OctreeNode;
-		 SMESH_OctreeNode (const std::set<const SMDS_MeshNode *> & theNodes,const int maxLevel = -1,const int maxNbNodes = 5,const double minBoxSize = 0);
-		%feature("compactdefaultargs") isInside;
-		%feature("autodoc", "	:param Node:
-	:type Node: SMDS_MeshNode *
-	:param precision: default value is 0
-	:type precision: double
-	:rtype: bool
-") isInside;
-		const bool isInside (const SMDS_MeshNode * Node,const double precision = 0);
-		%feature("compactdefaultargs") NodesAround;
-		%feature("autodoc", "	:param Node:
-	:type Node: SMDS_MeshNode *
-	:param Result:
-	:type Result: std::list< SMDS_MeshNode *> *
-	:param precision: default value is 0
-	:type precision: double
-	:rtype: None
-") NodesAround;
-		void NodesAround (const SMDS_MeshNode * Node,std::list<const SMDS_MeshNode *> * Result,const double precision = 0);
-		%feature("compactdefaultargs") NodesAround;
-		%feature("autodoc", "	:param Node:
-	:type Node: SMDS_MeshNode *
-	:param dist2Nodes:
-	:type dist2Nodes: std::map<double,  SMDS_MeshNode *> &
-	:param precision:
-	:type precision: double
-	:rtype: bool
-") NodesAround;
-		bool NodesAround (const SMDS_MeshNode * Node,std::map<double, const SMDS_MeshNode *> & dist2Nodes,double precision);
-		%feature("compactdefaultargs") FindCoincidentNodes;
-		%feature("autodoc", "	:param nodes:
-	:type nodes: std::set< SMDS_MeshNode *> *
-	:param theTolerance:
-	:type theTolerance: double
-	:param theGroupsOfNodes:
-	:type theGroupsOfNodes: std::list< std::list<  SMDS_MeshNode *> > *
-	:rtype: None
-") FindCoincidentNodes;
-		void FindCoincidentNodes (std::set<const SMDS_MeshNode *> * nodes,const double theTolerance,std::list< std::list< const SMDS_MeshNode *> > * theGroupsOfNodes);
-		%feature("compactdefaultargs") FindCoincidentNodes;
-		%feature("autodoc", "	:param nodes:
-	:type nodes: std::set< SMDS_MeshNode *> &
-	:param theGroupsOfNodes:
-	:type theGroupsOfNodes: std::list< std::list<  SMDS_MeshNode *> > *
-	:param theTolerance: default value is 0.00001
-	:type theTolerance: double
-	:param maxLevel: default value is -1
-	:type maxLevel: int
-	:param maxNbNodes: default value is 5
-	:type maxNbNodes: int
-	:rtype: void
-") FindCoincidentNodes;
-		static void FindCoincidentNodes (std::set<const SMDS_MeshNode *> & nodes,std::list< std::list< const SMDS_MeshNode *> > * theGroupsOfNodes,const double theTolerance = 0.00001,const int maxLevel = -1,const int maxNbNodes = 5);
-		%feature("compactdefaultargs") UpdateByMoveNode;
-		%feature("autodoc", "	* /*! * \brief Update data according to node movement */
-
-	:param node:
-	:type node: SMDS_MeshNode *
-	:param toPnt:
-	:type toPnt: gp_Pnt
-	:rtype: None
-") UpdateByMoveNode;
-		void UpdateByMoveNode (const SMDS_MeshNode * node,const gp_Pnt & toPnt);
-		%feature("compactdefaultargs") GetChildrenIterator;
-		%feature("autodoc", "	* /*! * \brief Return iterator over children */
-
-	:rtype: SMESH_OctreeNodeIteratorPtr
-") GetChildrenIterator;
-		SMESH_OctreeNodeIteratorPtr GetChildrenIterator ();
-		%feature("compactdefaultargs") GetNodeIterator;
-		%feature("autodoc", "	* /*! * \brief Return nodes iterator */
-
-	:rtype: SMDS_NodeIteratorPtr
-") GetNodeIterator;
-		SMDS_NodeIteratorPtr GetNodeIterator ();
-		%feature("compactdefaultargs") NbNodes;
-		%feature("autodoc", "	* /*! * \brief Return nb nodes in a tree */
-
-	:rtype: int
-") NbNodes;
-		int NbNodes ();
-};
-
-
-%extend SMESH_OctreeNode {
 	%pythoncode {
 	__repr__ = _dumps_object
 	}
