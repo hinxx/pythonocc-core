@@ -30,13 +30,14 @@ requirements:
     - swig
     - freetype
     - gcc               [linux]
-
+    - smesh ==6.7.2
   run:
     - pyqt >=5
     - oce ==0.17.3
     - python
     - freetype
     - pyobjc-core       [osx and py27]
+    - smesh ==6.7.2
 
 test:
   requires:
