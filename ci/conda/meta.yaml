@@ -27,6 +27,7 @@ requirements:
     - ninja ==1.7.2
     - swig ==3.0.11
     - freetype ==2.7
+    - smesh ==6.7.4
 
   run:
     - pyqt >=5
@@ -34,6 +35,7 @@ requirements:
     - python
     - freetype ==2.7
     - pyobjc-core       [osx and py27]
+    - smesh ==6.7.4
 
 test:
   requires:
