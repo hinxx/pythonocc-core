@@ -31,6 +31,8 @@ requirements:
     - freetype
     - gcc               [linux]
     - smesh ==6.7.2
+    - boost
+
   run:
     - pyqt >=5
     - oce ==0.17.3
