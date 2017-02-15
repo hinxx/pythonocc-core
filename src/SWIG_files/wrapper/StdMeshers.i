@@ -144,6 +144,16 @@ class StdMeshers_Arithmetic1D : public SMESH_Hypothesis {
 	:rtype: bool
 ") SetParametersByMesh;
 		bool SetParametersByMesh (const SMESH_Mesh * theMesh,const TopoDS_Shape & theShape);
+		%feature("compactdefaultargs") SetParametersByDefaults;
+		%feature("autodoc", "	* /*! * \brief Initialize my parameter values by default parameters. * etval bool - true if parameter values have been successfully defined */
+
+	:param dflts:
+	:type dflts: SMESH_0D_Algo::TDefaults &
+	:param theMesh: default value is 0
+	:type theMesh: SMESH_Mesh *
+	:rtype: bool
+") SetParametersByDefaults;
+		bool SetParametersByDefaults (const SMESH_0D_Algo::TDefaults & dflts,const SMESH_Mesh * theMesh = 0);
 };
 
 
@@ -692,6 +702,16 @@ class StdMeshers_Hexa_3D : public SMESH_3D_Algo {
 	:rtype: bool
 ") Evaluate;
 		bool Evaluate (SMESH_Mesh & aMesh,const TopoDS_Shape & aShape,MapShapeNbElems & aResMap);
+		%feature("compactdefaultargs") OppositeVertex;
+		%feature("autodoc", "	:param aVertex:
+	:type aVertex: TopoDS_Vertex &
+	:param aQuads0Vertices:
+	:type aQuads0Vertices: TopTools_IndexedMapOfShape &
+	:param aQuads:
+	:type aQuads: FaceQuadStruct *
+	:rtype: TopoDS_Vertex
+") OppositeVertex;
+		static TopoDS_Vertex OppositeVertex (const TopoDS_Vertex & aVertex,const TopTools_IndexedMapOfShape & aQuads0Vertices,FaceQuadStruct * aQuads[6]);
 };
 
 
@@ -1384,6 +1404,14 @@ enum DistrType {
 	:rtype: int
 ") GetNumberOfSegments;
 		int GetNumberOfSegments ();
+		%feature("compactdefaultargs") SetDistrType;
+		%feature("autodoc", "	* /*! * \brief Set distribution type */
+
+	:param typ:
+	:type typ: StdMeshers_NumberOfSegments::DistrType
+	:rtype: None
+") SetDistrType;
+		void SetDistrType (StdMeshers_NumberOfSegments::DistrType typ);
 		%feature("compactdefaultargs") GetDistrType;
 		%feature("autodoc", "	* /*! * \brief Get distribution type */
 
