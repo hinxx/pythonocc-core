@@ -1,4 +1,4 @@
-##Copyright 2009-2011 Thomas Paviot (tpaviot@gmail.com)
+##Copyright 2009-2017 Thomas Paviot (tpaviot@gmail.com)
 ##
 ##This file is part of pythonOCC.
 ##
@@ -14,6 +14,8 @@
 ##
 ##You should have received a copy of the GNU Lesser General Public License
 ##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+
+import sys
 
 from OCC.gp import gp_Pnt
 from OCC.TopAbs import TopAbs_FACE
@@ -44,31 +46,14 @@ def point_list_to_TColgp_Array1OfPnt(li):
         pts.SetValue(n, i)
     return pts
 
-def rndPts(npts, upper_bound, lower_bound):
-    '''
-    '''
-    _rndpts = []
-    for i in xrange(npts):
-        a = [random.uniform(upper_bound, lower_bound) for i in range(3)]
-        _rndpts.append(a)
-
-    _rndpts = sorted(_rndpts, key=operator.itemgetter(0))
-    _out = []
-    for i in _rndpts:
-        _out.append(gp_Pnt(i[0], i[1], i[2]))
-
-    points = point_list_to_TColgp_Array1OfPnt(_out)
-    return points
-
-
-def get_simple_bound(rndPts0):    
-    spl1 = GeomAPI_PointsToBSpline(rndPts0).Curve()
+def get_simple_bound(pts):
+    spl1 = GeomAPI_PointsToBSpline(pts).Curve()
     spl1_adap_h = GeomAdaptor_HCurve(spl1).GetHandle()
     bound1_h = GeomFill_SimpleBound(spl1_adap_h, 0.001, 0.001).GetHandle()
     return spl1, bound1_h
 
 def constrained_filling(event=None):
-    
+
     # left
     pts1 = point_list_to_TColgp_Array1OfPnt((gp_Pnt(0, 0, 0.0),
                                              gp_Pnt(0, 1, 0.3),
@@ -77,22 +62,22 @@ def constrained_filling(event=None):
                                              gp_Pnt(0, 4, 0)))
     # front
     pts2 = point_list_to_TColgp_Array1OfPnt((gp_Pnt(0, 0, 0.0),
-                                            gp_Pnt(1, 0, -0.3),
-                                            gp_Pnt(2, 0, 0.15),
-                                            gp_Pnt(3, 0, 0),
-                                            gp_Pnt(4, 0, 0)))
+                                             gp_Pnt(1, 0, -0.3),
+                                             gp_Pnt(2, 0, 0.15),
+                                             gp_Pnt(3, 0, 0),
+                                             gp_Pnt(4, 0, 0)))
     # back
     pts3 = point_list_to_TColgp_Array1OfPnt((gp_Pnt(0, 4, 0),
-                                            gp_Pnt(1, 4, 0.3),
-                                            gp_Pnt(2, 4, -0.15),
-                                            gp_Pnt(3, 4, 0),
-                                            gp_Pnt(4, 4, 1)))
+                                             gp_Pnt(1, 4, 0.3),
+                                             gp_Pnt(2, 4, -0.15),
+                                             gp_Pnt(3, 4, 0),
+                                             gp_Pnt(4, 4, 1)))
     # rechts
     pts4 = point_list_to_TColgp_Array1OfPnt((gp_Pnt(4, 0, 0),
-                                            gp_Pnt(4, 1, 0),
-                                            gp_Pnt(4, 2, 2),
-                                            gp_Pnt(4, 3, -0.15),
-                                            gp_Pnt(4, 4, 1)))
+                                             gp_Pnt(4, 1, 0),
+                                             gp_Pnt(4, 2, 2),
+                                             gp_Pnt(4, 3, -0.15),
+                                             gp_Pnt(4, 4, 1)))
 
     spl1, b1 = get_simple_bound(pts1)
     spl2, b2 = get_simple_bound(pts2)
@@ -117,10 +102,9 @@ def constrained_filling(event=None):
     return shp
 
 def exit(event=None):
-    import sys
     sys.exit(0)
 
-def occ_triangle_mesh(event = None):
+def occ_triangle_mesh(event=None):
     #
     # Mesh the shape
     #
@@ -128,11 +112,11 @@ def occ_triangle_mesh(event = None):
     builder = BRep_Builder()
     Comp = TopoDS_Compound()
     builder.MakeCompound(Comp)
-    
+
     ex = TopExp_Explorer(aShape, TopAbs_FACE)
     while ex.More():
         F = topods_Face(ex.Current())
-        L = TopLoc_Location()       
+        L = TopLoc_Location()
         facing = (BRep_Tool().Triangulation(F, L)).GetObject()
         tab = facing.Nodes()
         tri = facing.Triangles()
@@ -141,19 +125,19 @@ def occ_triangle_mesh(event = None):
             #print trian
             index1, index2, index3 = trian.Get()
             for j in range(1, 4):
-                if j == 1:    
+                if j == 1:
                     M = index1
                     N = index2
-                elif j == 2:    
+                elif j == 2:
                     N = index3
                 elif j == 3:
-                    M = index2  
+                    M = index2
                 ME = BRepBuilderAPI_MakeEdge(tab.Value(M), tab.Value(N))
                 if ME.IsDone():
                     builder.Add(Comp, ME.Edge())
         ex.Next()
     display.DisplayShape(Comp, update=True)
-        
+
 def smesh_quadrangle_mesh(event=None):
     # Create the Mesh
     aMeshGen = SMESH_Gen()
@@ -164,7 +148,7 @@ def smesh_quadrangle_mesh(event=None):
     an1DHypothesis.SetLength(0.3, True)  # the longest distance between 2 points
     an1DAlgo = StdMeshers_Regular_1D(1, 0, aMeshGen)  # interpolation
     # 2D
-    a2dHypothseis = StdMeshers_TrianglePreference(2,0,aMeshGen)  # define the boundary
+    a2dHypothseis = StdMeshers_TrianglePreference(2, 0, aMeshGen)  # define the boundary
     a2dAlgo = StdMeshers_Quadrangle_2D(3, 0, aMeshGen)  # the 2D mesh
     #Calculate mesh
     aMesh.ShapeToMesh(aShape)
@@ -177,7 +161,7 @@ def smesh_quadrangle_mesh(event=None):
     aMeshGen.Compute(aMesh, aMesh.GetShapeToMesh())
     # Display the data
     display_mesh(aMesh)
- 
+
 def smesh_MEFISTO2D(event=None):
     # Create the Mesh
     aMeshGen = SMESH_Gen()
@@ -201,7 +185,7 @@ def smesh_MEFISTO2D(event=None):
     aMeshGen.Compute(aMesh, aMesh.GetShapeToMesh())
     # Display the data
     display_mesh(aMesh)
-    
+
 def display_mesh(the_mesh):
     # First, erase all
     display.EraseAll()
@@ -211,7 +195,11 @@ def display_mesh(the_mesh):
     aDS = SMESH_MeshVSLink(the_mesh)
     aMeshVS = MeshVS_Mesh(True)
     DMF = 1 # to wrap!
-    aPrsBuilder = MeshVS_MeshPrsBuilder(aMeshVS.GetHandle(), DMF, aDS.GetHandle(), 0, MeshVS_BP_Mesh)
+    aPrsBuilder = MeshVS_MeshPrsBuilder(aMeshVS.GetHandle(),
+                                        DMF,
+                                        aDS.GetHandle(),
+                                        0,
+                                        MeshVS_BP_Mesh)
     aMeshVS.SetDataSource(aDS.GetHandle())
     aMeshVS.AddBuilder(aPrsBuilder.GetHandle(), True)
     #Create the graphic window and display the mesh
@@ -230,5 +218,3 @@ if __name__ == '__main__':
     aShape = constrained_filling()
     display.DisplayShape(aShape, update=True)
     start_display()
-
-
