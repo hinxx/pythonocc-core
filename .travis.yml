@@ -2,6 +2,11 @@ sudo: false
 
 language: cpp
 
+
+cache:
+  directories:
+    - $HOME/miniconda
+
 # the secure below is the binstar token
 # to genrate this secure
 # first create an anconda cloud token
