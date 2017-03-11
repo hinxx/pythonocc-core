@@ -24,7 +24,7 @@ import glob
 import sys
 import subprocess
 
-all_examples_file_names = glob.glob(os.path.join('..', 'examples', 'core_*.py'))
+all_examples_file_names = glob.glob(os.path.join('..', 'examples', '*.py'))
 # some tests have to be excluded from the automatic
 # run.
 tests_to_exclude = ['core_display_signal_slots.py',
