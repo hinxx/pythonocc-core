@@ -209,12 +209,13 @@ def display_mesh(the_mesh):
 
     display.FitAll()
 
+aShape = constrained_filling()
+
 if __name__ == '__main__':
     add_menu('surfacic mesh')
     add_function_to_menu('surfacic mesh', occ_triangle_mesh)
     add_function_to_menu('surfacic mesh', smesh_quadrangle_mesh)
     add_function_to_menu('surfacic mesh', smesh_MEFISTO2D)
     add_function_to_menu('surfacic mesh', exit)
-    aShape = constrained_filling()
     display.DisplayShape(aShape, update=True)
     start_display()
