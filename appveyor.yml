@@ -73,7 +73,6 @@ install:
     - cmd: conda config --set show_channel_urls true
     - cmd: conda update --yes --quiet conda
     - cmd: conda install --yes conda-build
-    - "%CMD_IN_ENV% conda config --add channels https://conda.anaconda.org/conda-forge"
     - "%CMD_IN_ENV% conda config --add channels https://conda.anaconda.org/dlr-sc"
     - "%CMD_IN_ENV% conda config --add channels https://conda.anaconda.org/oce"
 
