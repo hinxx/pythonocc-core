@@ -39,7 +39,9 @@ from OCC import Quantity
 
 from OCC.Display.SimpleGui import init_display
 
+filename = './models/as1-oc-214.stp'
 filename = './models/as1_pe_203.stp'
+filename = './models/cubez.stp'
 #filename = './as1-oc-214.stp'
 #filename = './as1_pe_203.stp'
 _shapes = []
@@ -158,25 +160,33 @@ def handleLabel(l_shape):
 	print("Is Reference   :", shape_tool.IsReference(l_shape))
 #	print("Is SubShape    :", shape_tool.IsSubShape(l_shape))
 
-	if shape_tool.IsShape(l_shape):
-		if shape_tool.IsAssembly(l_shape):
-			handleAssembly(l_shape)
-		elif shape_tool.IsCompound(l_shape):
-			handleCompound(l_shape)
-		elif shape_tool.IsFree(l_shape):
-			handleFree(l_shape)
-
-	if shape_tool.IsComponent(l_shape):
-		handleComponent(l_shape)
-
+	handled = False
 	if shape_tool.IsSimpleShape(l_shape):
 		handleSimpleShape(l_shape)
+		handled = True
+
+	if not handled and shape_tool.IsShape(l_shape):
+		if shape_tool.IsAssembly(l_shape):
+			handleAssembly(l_shape)
+			handled = True
+		elif shape_tool.IsCompound(l_shape):
+			handleCompound(l_shape)
+			handled = True
+		elif shape_tool.IsFree(l_shape):
+			handleFree(l_shape)
+			handled = True
+
+	if not handled and shape_tool.IsComponent(l_shape):
+		handleComponent(l_shape)
+		handled = True
+
 #	else:
 #		print("UNHANDLED")
 #		exit(1)
 
-	if shape_tool.IsReference(l_shape):
+	if not handled and shape_tool.IsReference(l_shape):
 		handleReference(l_shape)
+		handled = True
 
 def handleAssembly(l_shape):
 	print("\nhandling ASSEMBLY\n")
@@ -243,7 +253,7 @@ def handleFree(l_shape):
 		handleLabel(l_comp)
 
 def handleSimpleShape(l_shape):
-	print("handling SHAPE")
+	print("handling SIMPLE SHAPE")
 	cg = color_tool.IsSet(l_shape, XCAFDoc_ColorGen)
 	cs = color_tool.IsSet(l_shape, XCAFDoc_ColorSurf)
 	cc = color_tool.IsSet(l_shape, XCAFDoc_ColorCurv)
@@ -289,6 +299,7 @@ def handleSimpleShape(l_shape):
 			print('Curv instance color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
 
 #	_shapes.append(shape)
+	colorSet = False
 	c = Quantity.Quantity_Color()
 	if (color_tool.GetInstanceColor(shape, 0, c) or
 		color_tool.GetInstanceColor(shape, 1, c) or
@@ -300,20 +311,35 @@ def handleSimpleShape(l_shape):
 		print('1 set instance color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
 #		_shapes.append(shape)
 		display.DisplayColoredShape(shape, c)
-		return c
+		colorSet = True
+#		return c
 
-	if (color_tool.GetColor(l_shape, 0, c) or
-		color_tool.GetColor(l_shape, 1, c) or
-		color_tool.GetColor(l_shape, 2, c)):
-		#shape = shape_tool.GetShape(label)
-		for i in (0, 1, 2):
-			color_tool.SetInstanceColor(shape, i, c)
+	if not colorSet:
+		if (color_tool.GetColor(l_shape, 0, c) or
+			color_tool.GetColor(l_shape, 1, c) or
+			color_tool.GetColor(l_shape, 2, c)):
+			#shape = shape_tool.GetShape(label)
+			for i in (0, 1, 2):
+				color_tool.SetInstanceColor(shape, i, c)
 
-		n = c.Name(c.Red(), c.Green(), c.Blue())
-		print('2 set instance color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
-#		_shapes.append(shape)
-		display.DisplayColoredShape(shape, c)
-		return c
+			n = c.Name(c.Red(), c.Green(), c.Blue())
+			print('2 set instance color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
+	#		_shapes.append(shape)
+			display.DisplayColoredShape(shape, c)
+#			return c
+
+	l_subss = TDF_LabelSequence()
+	r = shape_tool.GetSubShapes(l_shape, l_subss)
+	print("    Nb subshapes     :", l_subss.Length())
+	print()
+#	subs = False
+	for j in range(l_subss.Length()):
+		print("\nhandling SHAPE SUBSHAPE\n")
+		l_subs = l_subss.Value(j+1)
+		handleLabel(l_subs)
+#		subs = True
+#	if subs:
+#		return True
 
 def handleComponent(l_shape):
 	print("handling COMPONENT")
@@ -349,15 +375,21 @@ def getShapes():
 def getShapes2():
 	l_shapes = TDF_LabelSequence()
 	shape_tool.GetShapes(l_shapes)
+
+	print()
+	print("Number of shapes :", l_shapes.Length())
+	print()
 	for i in range(l_shapes.Length()):
 		l_shape = l_shapes.Value(i+1)
-		shape = shape_tool.GetShape(l_shape)
-		label = getLabelName(l_shape)
-		print("label: ", label)
+#		shape = shape_tool.GetShape(l_shape)
+#		label = getLabelName(l_shape)
+#		print("label: ", label)
+		handleLabel(l_shape)
 
 def run(event=None):
 	display.EraseAll()
-	getShapes()
+#	getShapes()
+	getShapes2()
 	print()
 	print("Handled %d labels" % cnt)
 	print()
