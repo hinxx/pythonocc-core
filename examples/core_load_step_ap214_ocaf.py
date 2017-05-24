@@ -39,9 +39,9 @@ from OCC import Quantity
 
 from OCC.Display.SimpleGui import init_display
 
-#filename = './models/as1_pe_203.stp'
+filename = './models/as1_pe_203.stp'
 #filename = './as1-oc-214.stp'
-filename = './as1_pe_203.stp'
+#filename = './as1_pe_203.stp'
 _shapes = []
 
 # create an handle to a document
@@ -137,7 +137,8 @@ def getLabelName(lab):
 	lab.FindAttribute(TDataStd_Name_GetID(), N)
 	n = N.GetObject()
 	if n:
-		return unicode(n.Get().PrintToString(),errors='ignore')#.decode("latin-1")
+#		return unicode(n.Get().PrintToString(),errors='ignore')#.decode("latin-1")
+		return n.Get().PrintToString()
 	return "No Name"
 
 cnt = 0
@@ -156,7 +157,7 @@ def handleLabel(l_shape):
 	print("Is SimpleShape :", shape_tool.IsSimpleShape(l_shape))
 	print("Is Reference   :", shape_tool.IsReference(l_shape))
 #	print("Is SubShape    :", shape_tool.IsSubShape(l_shape))
-	
+
 	if shape_tool.IsShape(l_shape):
 		if shape_tool.IsAssembly(l_shape):
 			handleAssembly(l_shape)
@@ -176,12 +177,12 @@ def handleLabel(l_shape):
 
 	if shape_tool.IsReference(l_shape):
 		handleReference(l_shape)
-		
+
 def handleAssembly(l_shape):
 	print("\nhandling ASSEMBLY\n")
 	l_comps = TDF_LabelSequence()
 	l_subss = TDF_LabelSequence()
-	
+
 	r = shape_tool.GetSubShapes(l_shape, l_subss)
 	print("    Nb subshapes     :", l_subss.Length())
 	print()
@@ -202,7 +203,7 @@ def handleCompound(l_shape):
 	print("\nhandling COMPOUND\n")
 	l_comps = TDF_LabelSequence()
 	l_subss = TDF_LabelSequence()
-	
+
 	r = shape_tool.GetSubShapes(l_shape, l_subss)
 	print("    Nb subshapes     :", l_subss.Length())
 	print()
@@ -249,7 +250,7 @@ def handleSimpleShape(l_shape):
 	print("color_tool.IsSet: Gen=", cg, "Surf=", cs, "Curv=", cc)
 
 	shape = shape_tool.GetShape(l_shape)
-	
+
 	if cg:
 		c = Quantity.Quantity_Color()
 		r = color_tool.GetColor(l_shape, XCAFDoc_ColorGen, c)
@@ -261,8 +262,8 @@ def handleSimpleShape(l_shape):
 		if r:
 			n = c.Name(c.Red(), c.Green(), c.Blue())
 			print('Gen instance color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
-		
-	
+
+
 	if cs:
 		c = Quantity.Quantity_Color()
 		r = color_tool.GetColor(l_shape, XCAFDoc_ColorSurf, c)
@@ -274,7 +275,7 @@ def handleSimpleShape(l_shape):
 		if r:
 			n = c.Name(c.Red(), c.Green(), c.Blue())
 			print('Surf instance color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
-	
+
 	if cc:
 		c = Quantity.Quantity_Color()
 		r = color_tool.GetColor(l_shape, XCAFDoc_ColorCurv, c)
@@ -286,7 +287,7 @@ def handleSimpleShape(l_shape):
 		if r:
 			n = c.Name(c.Red(), c.Green(), c.Blue())
 			print('Curv instance color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
-	
+
 #	_shapes.append(shape)
 	c = Quantity.Quantity_Color()
 	if (color_tool.GetInstanceColor(shape, 0, c) or
@@ -297,7 +298,8 @@ def handleSimpleShape(l_shape):
 
 		n = c.Name(c.Red(), c.Green(), c.Blue())
 		print('1 set instance color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
-		_shapes.append(shape)
+#		_shapes.append(shape)
+		display.DisplayColoredShape(shape, c)
 		return c
 
 	if (color_tool.GetColor(l_shape, 0, c) or
@@ -309,7 +311,8 @@ def handleSimpleShape(l_shape):
 
 		n = c.Name(c.Red(), c.Green(), c.Blue())
 		print('2 set instance color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
-		_shapes.append(shape)
+#		_shapes.append(shape)
+		display.DisplayColoredShape(shape, c)
 		return c
 
 def handleComponent(l_shape):
@@ -352,20 +355,30 @@ def getShapes2():
 		label = getLabelName(l_shape)
 		print("label: ", label)
 
-getShapes()
+def run(event=None):
+	display.EraseAll()
+	getShapes()
+	print()
+	print("Handled %d labels" % cnt)
+	print()
+	display.FitAll()
+
+def exit(event=None):
+    sys.exit()
+
 #getColors()
 
 #getShapes2()
 
-print()
-print("Handled %d labels" % cnt)
-print()
-print("Have %d shapes" % len(_shapes))
+#print()
+#print("Handled %d labels" % cnt)
+#print()
+#print("Have %d shapes" % len(_shapes))
 
-print()
-print()
-print("========================================================================")
-print("                          DRAW")
+#print()
+#print()
+#print("========================================================================")
+#print("                          DRAW")
 
 #for i in range(labels.Length()):
 #	l_shape = labels.Value(i+1)
@@ -375,131 +388,13 @@ print("                          DRAW")
 #
 # Display
 #
-display, start_display, add_menu, add_function_to_menu = init_display()
-display.DisplayShape(_shapes, update=True)
-start_display()
+#display, start_display, add_menu, add_function_to_menu = init_display()
+#display.DisplayShape(_shapes, update=True)
+#start_display()
 
-exit(0)
+if __name__ == '__main__':
+	display, start_display, add_menu, add_function_to_menu = init_display()
+	add_menu('STEP import')
+	add_function_to_menu('STEP import', run)
+	start_display()
 
-
-
-
-print()
-print("Number of shapes at root :", labels.Length())
-print()
-for i in range(labels.Length()):
-    l_shape = labels.Value(i+1)
-    handleLabel(l_shape)
-    
-    sub_shapes_labels = TDF_LabelSequence()
-    component_labels = TDF_LabelSequence()
-    print(l_shape.DumpToString())
-    print()
-    print("Is Assembly    :", shape_tool.IsAssembly(l_shape))
-    print("Is Free        :", shape_tool.IsFree(l_shape))
-    print("Is Shape       :", shape_tool.IsShape(l_shape))
-    print("Is Compound    :", shape_tool.IsCompound(l_shape))
-    print("Is Component   :", shape_tool.IsComponent(l_shape))
-    print("Is SimpleShape :", shape_tool.IsSimpleShape(l_shape))
-    print("Is Reference   :", shape_tool.IsReference(l_shape))
-    print("NbComponents   :", shape_tool.NbComponents(l_shape))
-    components = shape_tool.GetComponents(l_shape, component_labels)
-    print("Number of components in the assembly :%i" % component_labels.Length())
-    sub_shapes = shape_tool.GetSubShapes(l_shape, sub_shapes_labels)
-    print("Number of subshapes in the assembly :%i" % sub_shapes_labels.Length())
-    users_labels = TDF_LabelSequence()
-    r = shape_tool.GetUsers(l_shape, users_labels)
-    print("Number of users:", users_labels.Length())
-
-    print('COMPONENTS:')
-    component_labels = TDF_LabelSequence()
-    print("    Nb Components of shape :", shape_tool.NbComponents(l_shape))
-    components = shape_tool.GetComponents(l_shape, component_labels)
-    print("    Nb loaded components   :", component_labels.Length())
-    print()
-    for j in range(component_labels.Length()):
-        l_comp = component_labels.Value(j+1)
-        print('    COMPONENT: ', j)
-        print(l_comp.DumpToString())
-        print("    Is Assembly    :", shape_tool.IsAssembly(l_comp))
-        print("    Is Free        :", shape_tool.IsFree(l_comp))
-        print("    Is Shape       :", shape_tool.IsShape(l_comp))
-        print("    Is Compound    :", shape_tool.IsCompound(l_comp))
-        print("    Is Component   :", shape_tool.IsComponent(l_comp))
-        print("    Is SimpleShape :", shape_tool.IsSimpleShape(l_comp))
-        print("    Is Reference   :", shape_tool.IsReference(l_comp))
-        print("    NbComponents   :", shape_tool.NbComponents(l_comp))
-        r = color_tool.IsSet(l_comp, XCAFDoc_ColorGen)
-        print("    color.IsSet Gen:", r)
-        r = color_tool.IsSet(l_comp, XCAFDoc_ColorSurf)
-        print("    color.IsSet Sur:", r)
-        r = color_tool.IsSet(l_comp, XCAFDoc_ColorCurv)
-        print("    color.IsSet Cur:", r)
-        component_users_labels = TDF_LabelSequence()
-        r = shape_tool.GetUsers(l_comp, component_users_labels)
-        print("    Nb of users    :", component_users_labels.Length())
-        layer_labels = TDF_LabelSequence()
-        r = layer_tool.GetLayers(l_shape, layer_labels)
-        print("    Nb Layers      :", layer_labels.Length())
-        l_refshape = TDF_Label()
-        r = shape_tool.GetReferredShape(l_comp, l_refshape)
-        print("    refered shape  :", r, l_refshape)
-
-        print('    REFERRED SHAPE: ', j)
-        print(l_refshape.DumpToString())
-        print("    Is Assembly    :", shape_tool.IsAssembly(l_refshape))
-        print("    Is Free        :", shape_tool.IsFree(l_refshape))
-        print("    Is Shape       :", shape_tool.IsShape(l_refshape))
-        print("    Is Compound    :", shape_tool.IsCompound(l_refshape))
-        print("    Is Component   :", shape_tool.IsComponent(l_refshape))
-        print("    Is SimpleShape :", shape_tool.IsSimpleShape(l_refshape))
-        print("    Is Reference   :", shape_tool.IsReference(l_refshape))
-        print("    NbComponents   :", shape_tool.NbComponents(l_refshape))
-        r = color_tool.IsSet(l_refshape, XCAFDoc_ColorGen)
-        print("    color.IsSet Gen:", r)
-        r = color_tool.IsSet(l_refshape, XCAFDoc_ColorSurf)
-        print("    color.IsSet Sur:", r)
-        r = color_tool.IsSet(l_refshape, XCAFDoc_ColorCurv)
-        print("    color.IsSet Cur:", r)
-        component_users_labels = TDF_LabelSequence()
-        r = shape_tool.GetUsers(l_refshape, component_users_labels)
-        print("    Nb of users    :", component_users_labels.Length())
-        layer_labels = TDF_LabelSequence()
-        r = layer_tool.GetLayers(l_shape, layer_labels)
-        print("    Nb Layers      :", layer_labels.Length())
-
-
-print()
-print()
-print("========================================================================")
-print("                          DRAW")
-
-for i in range(labels.Length()):
-    l_shape = labels.Value(i+1)
-
-    print()
-    print('SHAPE:')
-    r = color_tool.IsSet(l_shape, XCAFDoc_ColorGen)
-    print("color.IsSet Gen:", r)
-    r = color_tool.IsSet(l_shape, XCAFDoc_ColorSurf)
-    print("color.IsSet Sur:", r)
-    r = color_tool.IsSet(l_shape, XCAFDoc_ColorCurv)
-    print("color.IsSet Cur:", r)
-    layer_labels = TDF_LabelSequence()
-    r = layer_tool.GetLayers(l_shape, layer_labels)
-    print("Nb Layers      :", layer_labels.Length())
-#    print(color.DumpToString())
-#    red = Quantity.Quantity_Color(Quantity.Quantity_NOC_RED)
-#    color_tool.SetColor(l_shape, red, XCAFDoc_ColorGen)
-#    a_shape = h_shape_tool.GetObject().GetShape(l_shape)
-    a_shape = shape_tool.GetShape(l_shape)
-#    layer_labels = h_layer_tool.GetObject().GetLayers(a_shape)
-#    color_tool.SetColor(a_shape, red, XCAFDoc_ColorGen)
-    _shapes.append(a_shape)
-
-#
-# Display
-#
-display, start_display, add_menu, add_function_to_menu = init_display()
-display.DisplayShape(_shapes, update=True)
-start_display()
