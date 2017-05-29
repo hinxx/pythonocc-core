@@ -17,6 +17,7 @@
 
 from __future__ import print_function
 
+from sys import exit
 
 from OCC.TCollection import TCollection_ExtendedString
 
@@ -36,14 +37,17 @@ from OCC.TDataStd import Handle_TDataStd_Name, TDataStd_Name_GetID
 from OCC.TCollection import TCollection_ExtendedString, TCollection_AsciiString
 from OCC import Quantity
 #from OCC import Standard
+from OCC.gp import gp_Ax1, gp_Pnt, gp_Dir, gp_Trsf, gp_Quaternion
 
 from OCC.Display.SimpleGui import init_display
 
 filename = './models/as1-oc-214.stp'
-filename = './models/as1_pe_203.stp'
-filename = './models/cubez.stp'
+#filename = './models/as1_pe_203.stp'
+#filename = './models/cubez.stp'
 #filename = './as1-oc-214.stp'
 #filename = './as1_pe_203.stp'
+#filename = './models/SPKcorrector.stp'
+
 _shapes = []
 
 # create an handle to a document
@@ -143,6 +147,26 @@ def getLabelName(lab):
 		return n.Get().PrintToString()
 	return "No Name"
 
+
+def getMatrix(tran):
+    m = tran.VectorialPart()
+    gp = m.Row(1)
+    x1 = gp.X()
+    x2 = gp.Y()
+    x3 = gp.Z()
+    x4 = tran.Transforms()[0]
+    gp = m.Row(2)
+    y1 = gp.X()
+    y2 = gp.Y()
+    y3 = gp.Z()
+    y4 = tran.Transforms()[1]
+    gp = m.Row(3)
+    z1 = gp.X()
+    z2 = gp.Y()
+    z3 = gp.Z()
+    z4 = tran.Transforms()[2]
+    return [x1, x2, x3, x4, y1, y2, y3, y4, z1, z2, z3, z4]
+
 cnt = 0
 def handleLabel(l_shape):
 	global cnt
@@ -159,8 +183,23 @@ def handleLabel(l_shape):
 	print("Is SimpleShape :", shape_tool.IsSimpleShape(l_shape))
 	print("Is Reference   :", shape_tool.IsReference(l_shape))
 #	print("Is SubShape    :", shape_tool.IsSubShape(l_shape))
+	users = TDF_LabelSequence()
+	users_cnt = shape_tool.GetUsers(l_shape, users)
+	print("Nr Users       :", users_cnt)
+
+	loc = shape_tool.GetLocation(l_shape)
+	print("    location     :", loc)
+	tran = loc.Transformation()
+	print("    transformation     :", tran)
+	m = getMatrix(tran)
+	print("    location matrix     :", m)
 
 	handled = False
+
+	if shape_tool.IsReference(l_shape):
+		handleReference(l_shape)
+#		handled = True
+
 	if shape_tool.IsSimpleShape(l_shape):
 		handleSimpleShape(l_shape)
 		handled = True
@@ -183,10 +222,6 @@ def handleLabel(l_shape):
 #	else:
 #		print("UNHANDLED")
 #		exit(1)
-
-	if not handled and shape_tool.IsReference(l_shape):
-		handleReference(l_shape)
-		handled = True
 
 def handleAssembly(l_shape):
 	print("\nhandling ASSEMBLY\n")
@@ -369,7 +404,7 @@ def getShapes():
 	print()
 	cnt = 0
 	for i in range(labels.Length()):
-		l_shape = labels.Value(i+1)
+		l_shape = (i+1)
 		handleLabel(l_shape)
 
 def getShapes2():
@@ -386,17 +421,122 @@ def getShapes2():
 #		print("label: ", label)
 		handleLabel(l_shape)
 
+
+def getSubShapes3(lab, loc):
+	global cnt
+	cnt += 1
+	print("\n[%d]  handling LABEL %s\n" % (cnt, getLabelName(lab)))
+	print()
+	print(lab.DumpToString())
+	print()
+	print("Is Assembly    :", shape_tool.IsAssembly(lab))
+	print("Is Free        :", shape_tool.IsFree(lab))
+	print("Is Shape       :", shape_tool.IsShape(lab))
+	print("Is Compound    :", shape_tool.IsCompound(lab))
+	print("Is Component   :", shape_tool.IsComponent(lab))
+	print("Is SimpleShape :", shape_tool.IsSimpleShape(lab))
+	print("Is Reference   :", shape_tool.IsReference(lab))
+
+	users = TDF_LabelSequence()
+	users_cnt = shape_tool.GetUsers(lab, users)
+	print("Nr Users       :", users_cnt)
+
+	if shape_tool.IsAssembly(lab):
+		l_c = TDF_LabelSequence()
+		shape_tool.GetComponents(lab, l_c)
+		for i in range(l_c.Length()):
+			label = l_c.Value(i+1)
+			if shape_tool.IsReference(label):
+				label_reference=TDF_Label()
+				shape_tool.GetReferredShape(label, label_reference)
+				loc = shape_tool.GetLocation(label)
+				print("    loc          :", loc)
+				tran = loc.Transformation()
+				print("    tran         :", tran)
+				q = tran.GetRotation()
+				print("    q            :", q)
+				print("    X            :", q.X())
+				print("    Y            :", q.Y())
+				print("    Z            :", q.Z())
+				print("    W            :", q.W())
+
+				getSubShapes3(label_reference, loc)
+	elif shape_tool.IsShape(lab):
+		shape = shape_tool.GetShape(lab)
+		c = Quantity.Quantity_Color()
+		if (color_tool.GetColor(lab, 0, c) or
+			color_tool.GetColor(lab, 1, c) or
+			color_tool.GetColor(lab, 2, c)):
+			for i in (0, 1, 2):
+				color_tool.SetInstanceColor(shape, i, c)
+
+			n = c.Name(c.Red(), c.Green(), c.Blue())
+			print('set instance color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
+			cs = display.DisplayColoredShape(shape, c)
+			if loc:
+				print("    using loc     :", loc)
+				display.Context.SetLocation(cs, loc)
+				display.Context.UpdateCurrentViewer()
+
+#	else:
+#		getSubShapes3(label)
+
+
+#                reference_found = False
+#                matrix = TransformationMatrix(get_matrix(shape_tool.GetLocation(label).Transformation()))
+#                shape = shape_tool.GetShape(label_reference)
+#                for link in product.links:
+#                    if shape_tool.GetShape(link.product.label_reference).IsPartner(shape):
+#                        link.add_occurrence(get_label_name(label), matrix)
+#                        reference_found = True
+#                        break
+#
+#                if not reference_found:
+#                    new_product = Product(get_label_name(label_reference), deep,
+#                                          label_reference, doc_id, product_id[0], file_path)
+#                    product_assembly = search_assembly(new_product, product_root)
+#                    if product_assembly:
+#                        product.links.append(Link(product_assembly))
+#                    else:
+#                        product.links.append(Link(new_product))
+#                        product_id[0] += 1
+#                        expand_product(shape_tool, new_product, shapes_simples,
+#                            deep+1, doc_id, product_root,product_id, file_path)
+#
+#
+#                    product.links[-1].add_occurrence(get_label_name(label), matrix)
+#    else:
+#        compShape = shape_tool.GetShape(product.label_reference)
+#        for index in range(len(shapes_simples)):
+#            if compShape.IsPartner(shapes_simples[index].shape):
+#                product.set_geometry(index+1) #to avoid index==0
+
+
+def getShapes3():
+	labels = TDF_LabelSequence()
+	h_shape_tool.GetObject().GetFreeShapes(labels)
+	global cnt
+	cnt += 1
+
+	print()
+	print("Number of shapes at root :", labels.Length())
+	print()
+	root = labels.Value(1)
+
+	getSubShapes3(root, None)
+
 def run(event=None):
 	display.EraseAll()
 #	getShapes()
-	getShapes2()
+#	getShapes2()
+	getShapes3()
 	print()
 	print("Handled %d labels" % cnt)
 	print()
 	display.FitAll()
 
-def exit(event=None):
-    sys.exit()
+def exit1(event=None):
+    exit()
 
 #getColors()
 
@@ -428,5 +568,6 @@ if __name__ == '__main__':
 	display, start_display, add_menu, add_function_to_menu = init_display()
 	add_menu('STEP import')
 	add_function_to_menu('STEP import', run)
+	add_function_to_menu('STEP import', exit1)
 	start_display()
 
