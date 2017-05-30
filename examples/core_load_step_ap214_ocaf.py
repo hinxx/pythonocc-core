@@ -47,7 +47,7 @@ from OCC.Display.SimpleGui import init_display
 
 filename = './models/as1-oc-214.stp'
 #filename = './models/as1_pe_203.stp'
-#filename = './models/cubez.stp'
+filename = './models/cubez.stp'
 #filename = './as1-oc-214.stp'
 #filename = './as1_pe_203.stp'
 #filename = './models/SPKcorrector.stp'
@@ -516,6 +516,14 @@ def getSubShapes3(lab, loc):
 	users_cnt = shape_tool.GetUsers(lab, users)
 	print("Nr Users       :", users_cnt)
 
+	l_subss = TDF_LabelSequence()
+	r = shape_tool.GetSubShapes(lab, l_subss)
+	print("Nb subshapes   :", l_subss.Length())
+	l_comps = TDF_LabelSequence()
+	shape_tool.GetComponents(lab, l_comps)
+	print("Nb components  :", l_comps.Length())
+	print()
+
 	if shape_tool.IsAssembly(lab):
 		l_c = TDF_LabelSequence()
 		shape_tool.GetComponents(lab, l_c)
@@ -540,17 +548,6 @@ def getSubShapes3(lab, loc):
 				print("    X            :", tran.X())
 				print("    Y            :", tran.Y())
 				print("    Z            :", tran.Z())
-				# print(loc.DumpToString())
-				# datum = loc.FirstDatum()
-				# print("    first datum  :", datum.GetObject())
-				# nextLoc = loc.NextLocation()
-				# print("    next loc     :", nextLoc)
-
-				# lvln = lvl + 1
-				# if len(rots) < lvln:
-				# 	rots.append(loc)
-				# elif len(rots) > lvln:
-				# 	del rots[-1]
 
 				locs.append(loc)
 				print(">>>>")
@@ -563,31 +560,13 @@ def getSubShapes3(lab, loc):
 	elif shape_tool.IsSimpleShape(lab):
 		print("\n########  simpleshape label :", lab)
 		shape = shape_tool.GetShape(lab)
-		# loc1 = shape.Location()
-		# tran1 = loc1.Transformation()
-		# print("    loc1          :", loc1)
-		# print("    tran1 form    :", tran1.Form())
-
 		print("    all ass locs   :", locs)
 
-		# loc = shape_tool.GetLocation(lab)
-		# print("    this loc       :", loc)
-		# print("    this loc hash  :", loc.HashCode())
-
-		# ll = TopLoc_Location()
-		# for i in range(len(locs)-1,-1,-1):
-		# 	l = locs[i]
-		# 	print("    take loc       :", l)
-		# 	ll = ll.Multiplied(l)
-			# shape = BRepBuilderAPI_Transform(shape, l.Transformation()).Shape()
-		# if loc.HashCode() > 0:
-			# shape = BRepBuilderAPI_Transform(shape, loc.Transformation()).Shape()
 		loc = TopLoc_Location()
 		for i in range(len(locs)):
 			print("    take loc       :", locs[i])
 			loc = loc.Multiplied(locs[i])
 
-		# loc = ll
 		trans = loc.Transformation()
 		print("    FINAL loc    :")
 		print("    tran form    :", trans.Form())
@@ -604,45 +583,6 @@ def getSubShapes3(lab, loc):
 		print("    Z            :", tran.Z())
 		shape = BRepBuilderAPI_Transform(shape, loc.Transformation()).Shape()
 
-		#
-		# if loc:
-		# 	print("    all ass locs   :", locs)
-		#
-		# 	loc = shape_tool.GetLocation(lab)
-		# 	print("    this loc       :", loc)
-		#
-		# 	for i in range(len(locs)):
-		# 		l = locs[i]
-		# 		shape = BRepBuilderAPI_Transform(shape, l.Transformation()).Shape()
-		#
-			# shape.Location(loc)
-			# trans = loc.Transformation()
-			# rot = trans.GetRotation()
-			# shape.Move(loc)
-			# rotated_box = rotate_shp_3_axis(shape, rot.X(), rot.Y(), rot.Z(), 'rad')
-			# tra = trans.TranslationPart()
-			# trans_box = translate_shp(rotated_box, gp_Vec(tra.X(), tra.Y(), tra.Z()))
-			# shape = trans_box
-
-			# rot = trans.GetRotation()
-			# shape = rotate_shp_3_axis(shape, rot.X(), rot.Y(), rot.Z(), 'rad')
-
-			# tra = trans.TranslationPart()
-			# shape = translate_shp(shape, gp_Vec(tra.X(), tra.Y(), tra.Z()))
-
-			# trsf = gp_Trsf()
-			# trsf.SetTransformation(rot, gp_Vec(tra.X(), tra.Y(), tra.Z()))
-			# shape = BRepBuilderAPI_Transform(shape, trsf, False).Shape()
-			# shp = brep_trns.Shape()
-
-			# trans = loc.Transformation()
-			# trsf =  = getMatrix(trans)
-			# shp = BRepBuilderAPI_GTransform(shape, trsf).Shape()
-			# shape = BRepBuilderAPI_Transform(shape, trsf).Shape()
-			# shape = shp
-			# shape = BRepBuilderAPI_Transform(shape, shape_tool.GetLocation(lab).Transformation()).Shape()
-			# shape = BRepBuilderAPI_Transform(shape, loc.Transformation()).Shape()
-
 		c = Quantity.Quantity_Color()
 		if (color_tool.GetColor(lab, 0, c) or
 			color_tool.GetColor(lab, 1, c) or
@@ -653,45 +593,22 @@ def getSubShapes3(lab, loc):
 		n = c.Name(c.Red(), c.Green(), c.Blue())
 		print('    color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
 		cs = display.DisplayColoredShape(shape, c)
-			# if loc:
-			# 	print("    using loc     :", loc)
-			# 	shape.Location(loc)
-#				display.Context.SetLocation(cs, loc)
-#				display.Context.UpdateCurrentViewer()
 
-#	else:
-#		getSubShapes3(label)
+		for i in range(l_subss.Length()):
+			lab = l_subss.Value(i+1)
+			print("\n########  simpleshape label :", lab)
+			shape = shape_tool.GetShape(lab)
 
+			c = Quantity.Quantity_Color()
+			if (color_tool.GetColor(lab, 0, c) or
+				color_tool.GetColor(lab, 1, c) or
+				color_tool.GetColor(lab, 2, c)):
+				for i in (0, 1, 2):
+					color_tool.SetInstanceColor(shape, i, c)
 
-#                reference_found = False
-#                matrix = TransformationMatrix(get_matrix(shape_tool.GetLocation(label).Transformation()))
-#                shape = shape_tool.GetShape(label_reference)
-#                for link in product.links:
-#                    if shape_tool.GetShape(link.product.label_reference).IsPartner(shape):
-#                        link.add_occurrence(get_label_name(label), matrix)
-#                        reference_found = True
-#                        break
-#
-#                if not reference_found:
-#                    new_product = Product(get_label_name(label_reference), deep,
-#                                          label_reference, doc_id, product_id[0], file_path)
-#                    product_assembly = search_assembly(new_product, product_root)
-#                    if product_assembly:
-#                        product.links.append(Link(product_assembly))
-#                    else:
-#                        product.links.append(Link(new_product))
-#                        product_id[0] += 1
-#                        expand_product(shape_tool, new_product, shapes_simples,
-#                            deep+1, doc_id, product_root,product_id, file_path)
-#
-#
-#                    product.links[-1].add_occurrence(get_label_name(label), matrix)
-#    else:
-#        compShape = shape_tool.GetShape(product.label_reference)
-#        for index in range(len(shapes_simples)):
-#            if compShape.IsPartner(shapes_simples[index].shape):
-#                product.set_geometry(index+1) #to avoid index==0
-
+			n = c.Name(c.Red(), c.Green(), c.Blue())
+			print('    color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
+			cs = display.DisplayColoredShape(shape, c)
 
 def getShapes3():
 	labels = TDF_LabelSequence()
