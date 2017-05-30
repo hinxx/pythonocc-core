@@ -25,7 +25,7 @@ from OCC.gp import gp_Vec
 from OCC.Visualization import Tesselator
 from OCC import VERSION as OCC_VERSION
 
-from .simple_server import start_server
+from simple_server import start_server
 
 def color_to_hex(rgb_color):
     """ Takes a tuple with 3 floats between 0 and 1.
@@ -66,7 +66,7 @@ def ExportEdgeToJSON(edge_hash, point_set):
         else:
             json_string += "%s, %s, %s, %s, %s, %s]\n" % (fp_x, fp_y, fp_z, sp_x, sp_y, sp_z)
         # careful, json doesn't like the last comma
-    # so we write the 
+    # so we write the
     json_string += '\t\t\t}\n'
     json_string += '\t\t}\n'
     json_string += '\t}\n'
@@ -277,13 +277,13 @@ BODY_Part2 = """
             var direction = new THREE.Vector3().copy(camera.position).sub(controls.target);
             var len = direction.length();
             direction.normalize();
-            
+
             // compute new distance of camera to middle of scene to fit the object to screen
             var lnew = maxRad / Math.sin(camera.fov/180. * Math.PI / 2.);
             direction.multiplyScalar(lnew);
-            
+
             var pnew = new THREE.Vector3().copy(center).add(direction);
-            // change near far values to avoid culling of objects 
+            // change near far values to avoid culling of objects
             camera.position.set(pnew.x, pnew.y, pnew.z);
             camera.far = lnew*50;
             camera.near = lnew*50*0.001;
@@ -494,8 +494,19 @@ class ThreejsRenderer(object):
         start_server(server_port)
 
 if __name__ == "__main__":
-    from OCC.BRepPrimAPI import BRepPrimAPI_MakeBox
-    box = BRepPrimAPI_MakeBox(1., 2., 3.).Shape()
-    my_ren = ThreejsRenderer()
-    my_ren.DisplayShape(box)
-    my_ren.render()
+	from OCC.BRepPrimAPI import BRepPrimAPI_MakeBox
+	from OCC.gp import gp_Vec, gp_Pnt, gp_Trsf, gp_OX, gp_OY, gp_OZ
+	from OCC.BRepBuilderAPI import BRepBuilderAPI_Transform
+	box = BRepPrimAPI_MakeBox(1., 2., 3.).Shape()
+	box2 = BRepPrimAPI_MakeBox(3., 4., 5.).Shape()
+
+	trns = gp_Trsf()
+	trns.SetTranslation(gp_Vec(20, 30, 45))
+	brep_trns = BRepBuilderAPI_Transform(box2, trns, True)
+	brep_trns.Build()
+	box3 = brep_trns.Shape()
+
+	my_ren = ThreejsRenderer()
+	my_ren.DisplayShape(box)
+	my_ren.DisplayShape(box3)
+	my_ren.render()
