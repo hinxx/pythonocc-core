@@ -37,9 +37,13 @@ from OCC.TDataStd import Handle_TDataStd_Name, TDataStd_Name_GetID
 from OCC.TCollection import TCollection_ExtendedString, TCollection_AsciiString
 from OCC import Quantity
 #from OCC import Standard
-from OCC.gp import gp_Ax1, gp_Pnt, gp_Dir, gp_Trsf, gp_Quaternion
-
+from OCC.gp import gp_Ax1, gp_Pnt, gp_Dir, gp_Trsf, gp_Quaternion, gp_Vec, gp_GTrsf
+from OCC.TopLoc import TopLoc_Datum3D
+from OCC.gp import gp_Vec, gp_Pnt, gp_Trsf, gp_OX, gp_OY, gp_OZ
+from OCC.BRepBuilderAPI import BRepBuilderAPI_Transform
 from OCC.Display.SimpleGui import init_display
+
+# from core_geometry_utils import translate_shp, rotate_shp_3_axis
 
 filename = './models/as1-oc-214.stp'
 #filename = './models/as1_pe_203.stp'
@@ -148,7 +152,7 @@ def getLabelName(lab):
 	return "No Name"
 
 
-def getMatrix(tran):
+def getMatrix1(tran):
     m = tran.VectorialPart()
     gp = m.Row(1)
     x1 = gp.X()
@@ -166,6 +170,43 @@ def getMatrix(tran):
     z3 = gp.Z()
     z4 = tran.Transforms()[2]
     return [x1, x2, x3, x4, y1, y2, y3, y4, z1, z2, z3, z4]
+
+def getMatrix(location):
+	"""
+	 == == == == == = ==
+	x1 x2 x3 x4  x = x'
+	y1 y2 y3 y4  y = y'
+	z1 z2 z3 z4  z = z'
+	0  0  0  1   1 = 1
+	== == == == == = ==
+	:param location: location
+	:type location: :class:`.OCC.TopLoc.TopLoc_Location`
+	"""
+	m = location.VectorialPart()
+	gp = m.Row(1)
+	x1 = gp.X()
+	x2 = gp.Y()
+	x3 = gp.Z()
+	x4 = location.Transforms()[0]
+	gp = m.Row(2)
+	y1 = gp.X()
+	y2 = gp.Y()
+	y3 = gp.Z()
+	y4 = location.Transforms()[1]
+	gp = m.Row(3)
+	z1 = gp.X()
+	z2 = gp.Y()
+	z3 = gp.Z()
+	z4 = location.Transforms()[2]
+	the_trsf = gp_Trsf()
+	the_trsf.SetValues(x1, x2, x3, x4, y1, y2, y3, y4, z1, z2, z3, z4)
+
+#	print("    transfroms:", location.Transforms())
+	print("    matrix:", x1, x2, x3, x4, y1, y2, y3, y4, z1, z2, z3, z4)
+	return the_trsf
+	#the_gtrsf = gp_GTrsf()
+	#the_gtrsf.SetTrsf(the_trsf)
+	#return the_gtrsf
 
 cnt = 0
 def handleLabel(l_shape):
@@ -422,10 +463,44 @@ def getShapes2():
 		handleLabel(l_shape)
 
 
+def translate_shp(shp, vec, copy=False):
+	trns = gp_Trsf()
+	trns.SetTranslation(vec)
+	brep_trns = BRepBuilderAPI_Transform(shp, trns, copy)
+	brep_trns.Build()
+	return brep_trns.Shape()
+
+
+def rotate_shp_3_axis(shape, rx, ry, rz, unity="deg"):
+	""" Rotate a shape around (O,x), (O,y) and (O,z).
+
+	@param rx_degree : rotation around (O,x)
+	@param ry_degree : rotation around (O,y)
+	@param rz_degree : rotation around (O,z)
+
+	@return : the rotated shape.
+	"""
+	if unity == "deg":  # convert angle to radians
+		rx = radians(rx)
+		ry = radians(ry)
+		rz = radians(rz)
+	alpha = gp_Trsf()
+	alpha.SetRotation(gp_OX(), rx)
+	beta = gp_Trsf()
+	beta.SetRotation(gp_OY(), ry)
+	gamma = gp_Trsf()
+	gamma.SetRotation(gp_OZ(), rz)
+	brep_trns = BRepBuilderAPI_Transform(shape, alpha*beta*gamma, False)
+	brep_trns.Build()
+	shp = brep_trns.Shape()
+	return shp
+
+lvl = 0
+locs = []
 def getSubShapes3(lab, loc):
-	global cnt
+	global cnt, lvl
 	cnt += 1
-	print("\n[%d]  handling LABEL %s\n" % (cnt, getLabelName(lab)))
+	print("\n[%d] level %d, handling LABEL %s\n" % (cnt, lvl, getLabelName(lab)))
 	print()
 	print(lab.DumpToString())
 	print()
@@ -451,29 +526,94 @@ def getSubShapes3(lab, loc):
 				shape_tool.GetReferredShape(label, label_reference)
 				loc = shape_tool.GetLocation(label)
 				print("    loc          :", loc)
-				tran = loc.Transformation()
-				print("    tran form    :", tran.Form())
-				q = tran.GetRotation()
-				print("    q            :", q)
-				print("    X            :", q.X())
-				print("    Y            :", q.Y())
-				print("    Z            :", q.Z())
-				print("    W            :", q.W())
+				trans = loc.Transformation()
+				print("    tran form    :", trans.Form())
+				rot = trans.GetRotation()
+				print("    rotation     :", rot)
+				print("    X            :", rot.X())
+				print("    Y            :", rot.Y())
+				print("    Z            :", rot.Z())
+				print("    W            :", rot.W())
+				tran = trans.TranslationPart()
+				print("    translation  :", tran)
+				print("    X            :", tran.X())
+				print("    Y            :", tran.Y())
+				print("    Z            :", tran.Z())
+				# print(loc.DumpToString())
+				# datum = loc.FirstDatum()
+				# print("    first datum  :", datum.GetObject())
+				# nextLoc = loc.NextLocation()
+				# print("    next loc     :", nextLoc)
 
+				# lvln = lvl + 1
+				# if len(rots) < lvln:
+				# 	rots.append(loc)
+				# elif len(rots) > lvln:
+				# 	del rots[-1]
+
+				locs.append(loc)
+				print(">>>>")
+				lvl += 1
 				getSubShapes3(label_reference, loc)
+				lvl -= 1
+				print("<<<<")
+				locs.pop()
 
-	elif shape_tool.IsShape(lab):
+	elif shape_tool.IsSimpleShape(lab):
 		shape = shape_tool.GetShape(lab)
 		# loc1 = shape.Location()
 		# tran1 = loc1.Transformation()
 		# print("    loc1          :", loc1)
 		# print("    tran1 form    :", tran1.Form())
-		if loc:
-			print("    using loc     :", loc)
+
+		print("    all ass locs   :", locs)
+
+		loc = shape_tool.GetLocation(lab)
+		print("    this loc       :", loc)
+
+		for i in range(len(locs)):
+			l = locs[i]
+			shape = BRepBuilderAPI_Transform(shape, l.Transformation()).Shape()
+		shape = BRepBuilderAPI_Transform(shape, loc.Transformation()).Shape()
+
+		#
+		# if loc:
+		# 	print("    all ass locs   :", locs)
+		#
+		# 	loc = shape_tool.GetLocation(lab)
+		# 	print("    this loc       :", loc)
+		#
+		# 	for i in range(len(locs)):
+		# 		l = locs[i]
+		# 		shape = BRepBuilderAPI_Transform(shape, l.Transformation()).Shape()
+		#
 			# shape.Location(loc)
-			# tran = loc.Transformation()
-			# rot = tran.GetRotation()
-			shape.Move(loc)
+			# trans = loc.Transformation()
+			# rot = trans.GetRotation()
+			# shape.Move(loc)
+			# rotated_box = rotate_shp_3_axis(shape, rot.X(), rot.Y(), rot.Z(), 'rad')
+			# tra = trans.TranslationPart()
+			# trans_box = translate_shp(rotated_box, gp_Vec(tra.X(), tra.Y(), tra.Z()))
+			# shape = trans_box
+
+			# rot = trans.GetRotation()
+			# shape = rotate_shp_3_axis(shape, rot.X(), rot.Y(), rot.Z(), 'rad')
+
+			# tra = trans.TranslationPart()
+			# shape = translate_shp(shape, gp_Vec(tra.X(), tra.Y(), tra.Z()))
+
+			# trsf = gp_Trsf()
+			# trsf.SetTransformation(rot, gp_Vec(tra.X(), tra.Y(), tra.Z()))
+			# shape = BRepBuilderAPI_Transform(shape, trsf, False).Shape()
+			# shp = brep_trns.Shape()
+
+			# trans = loc.Transformation()
+			# trsf =  = getMatrix(trans)
+			# shp = BRepBuilderAPI_GTransform(shape, trsf).Shape()
+			# shape = BRepBuilderAPI_Transform(shape, trsf).Shape()
+			# shape = shp
+			# shape = BRepBuilderAPI_Transform(shape, shape_tool.GetLocation(lab).Transformation()).Shape()
+			# shape = BRepBuilderAPI_Transform(shape, loc.Transformation()).Shape()
 
 		c = Quantity.Quantity_Color()
 		if (color_tool.GetColor(lab, 0, c) or
@@ -483,7 +623,7 @@ def getSubShapes3(lab, loc):
 				color_tool.SetInstanceColor(shape, i, c)
 
 		n = c.Name(c.Red(), c.Green(), c.Blue())
-		print('set instance color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
+		print('    color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
 		cs = display.DisplayColoredShape(shape, c)
 			# if loc:
 			# 	print("    using loc     :", loc)
