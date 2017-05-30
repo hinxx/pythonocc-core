@@ -452,7 +452,7 @@ def getSubShapes3(lab, loc):
 				loc = shape_tool.GetLocation(label)
 				print("    loc          :", loc)
 				tran = loc.Transformation()
-				print("    tran         :", tran)
+				print("    tran form    :", tran.Form())
 				q = tran.GetRotation()
 				print("    q            :", q)
 				print("    X            :", q.X())
@@ -461,8 +461,20 @@ def getSubShapes3(lab, loc):
 				print("    W            :", q.W())
 
 				getSubShapes3(label_reference, loc)
+
 	elif shape_tool.IsShape(lab):
 		shape = shape_tool.GetShape(lab)
+		# loc1 = shape.Location()
+		# tran1 = loc1.Transformation()
+		# print("    loc1          :", loc1)
+		# print("    tran1 form    :", tran1.Form())
+		if loc:
+			print("    using loc     :", loc)
+			# shape.Location(loc)
+			# tran = loc.Transformation()
+			# rot = tran.GetRotation()
+			shape.Move(loc)
+
 		c = Quantity.Quantity_Color()
 		if (color_tool.GetColor(lab, 0, c) or
 			color_tool.GetColor(lab, 1, c) or
@@ -470,13 +482,14 @@ def getSubShapes3(lab, loc):
 			for i in (0, 1, 2):
 				color_tool.SetInstanceColor(shape, i, c)
 
-			n = c.Name(c.Red(), c.Green(), c.Blue())
-			print('set instance color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
-			cs = display.DisplayColoredShape(shape, c)
-			if loc:
-				print("    using loc     :", loc)
-				display.Context.SetLocation(cs, loc)
-				display.Context.UpdateCurrentViewer()
+		n = c.Name(c.Red(), c.Green(), c.Blue())
+		print('set instance color Name & RGB: ', c, n, c.Red(), c.Green(), c.Blue())
+		cs = display.DisplayColoredShape(shape, c)
+			# if loc:
+			# 	print("    using loc     :", loc)
+			# 	shape.Location(loc)
+#				display.Context.SetLocation(cs, loc)
+#				display.Context.UpdateCurrentViewer()
 
 #	else:
 #		getSubShapes3(label)
@@ -570,4 +583,3 @@ if __name__ == '__main__':
 	add_function_to_menu('STEP import', run)
 	add_function_to_menu('STEP import', exit1)
 	start_display()
-
