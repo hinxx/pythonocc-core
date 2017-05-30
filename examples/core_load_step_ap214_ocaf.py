@@ -46,10 +46,8 @@ from OCC.Display.SimpleGui import init_display
 # from core_geometry_utils import translate_shp, rotate_shp_3_axis
 
 filename = './models/as1-oc-214.stp'
-#filename = './models/as1_pe_203.stp'
-filename = './models/cubez.stp'
-#filename = './as1-oc-214.stp'
-#filename = './as1_pe_203.stp'
+filename = './models/as1_pe_203.stp'
+#filename = './models/cubez.stp'
 #filename = './models/SPKcorrector.stp'
 
 _shapes = []
