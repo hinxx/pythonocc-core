@@ -38,7 +38,7 @@ from OCC.TCollection import TCollection_ExtendedString, TCollection_AsciiString
 from OCC import Quantity
 #from OCC import Standard
 from OCC.gp import gp_Ax1, gp_Pnt, gp_Dir, gp_Trsf, gp_Quaternion, gp_Vec, gp_GTrsf
-from OCC.TopLoc import TopLoc_Datum3D
+from OCC.TopLoc import TopLoc_Datum3D, TopLoc_Location
 from OCC.gp import gp_Vec, gp_Pnt, gp_Trsf, gp_OX, gp_OY, gp_OZ
 from OCC.BRepBuilderAPI import BRepBuilderAPI_Transform
 from OCC.Display.SimpleGui import init_display
@@ -522,6 +522,7 @@ def getSubShapes3(lab, loc):
 		for i in range(l_c.Length()):
 			label = l_c.Value(i+1)
 			if shape_tool.IsReference(label):
+				print("\n########  reference label :", label)
 				label_reference=TDF_Label()
 				shape_tool.GetReferredShape(label, label_reference)
 				loc = shape_tool.GetLocation(label)
@@ -560,6 +561,7 @@ def getSubShapes3(lab, loc):
 				locs.pop()
 
 	elif shape_tool.IsSimpleShape(lab):
+		print("\n########  simpleshape label :", lab)
 		shape = shape_tool.GetShape(lab)
 		# loc1 = shape.Location()
 		# tran1 = loc1.Transformation()
@@ -568,12 +570,38 @@ def getSubShapes3(lab, loc):
 
 		print("    all ass locs   :", locs)
 
-		loc = shape_tool.GetLocation(lab)
-		print("    this loc       :", loc)
+		# loc = shape_tool.GetLocation(lab)
+		# print("    this loc       :", loc)
+		# print("    this loc hash  :", loc.HashCode())
 
+		# ll = TopLoc_Location()
+		# for i in range(len(locs)-1,-1,-1):
+		# 	l = locs[i]
+		# 	print("    take loc       :", l)
+		# 	ll = ll.Multiplied(l)
+			# shape = BRepBuilderAPI_Transform(shape, l.Transformation()).Shape()
+		# if loc.HashCode() > 0:
+			# shape = BRepBuilderAPI_Transform(shape, loc.Transformation()).Shape()
+		loc = TopLoc_Location()
 		for i in range(len(locs)):
-			l = locs[i]
-			shape = BRepBuilderAPI_Transform(shape, l.Transformation()).Shape()
+			print("    take loc       :", locs[i])
+			loc = loc.Multiplied(locs[i])
+
+		# loc = ll
+		trans = loc.Transformation()
+		print("    FINAL loc    :")
+		print("    tran form    :", trans.Form())
+		rot = trans.GetRotation()
+		print("    rotation     :", rot)
+		print("    X            :", rot.X())
+		print("    Y            :", rot.Y())
+		print("    Z            :", rot.Z())
+		print("    W            :", rot.W())
+		tran = trans.TranslationPart()
+		print("    translation  :", tran)
+		print("    X            :", tran.X())
+		print("    Y            :", tran.Y())
+		print("    Z            :", tran.Z())
 		shape = BRepBuilderAPI_Transform(shape, loc.Transformation()).Shape()
 
 		#
