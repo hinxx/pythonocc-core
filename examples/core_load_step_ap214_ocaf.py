@@ -47,8 +47,8 @@ from OCC.Display.SimpleGui import init_display
 
 filename = './models/as1-oc-214.stp'
 filename = './models/as1_pe_203.stp'
-#filename = './models/cubez.stp'
-#filename = './models/SPKcorrector.stp'
+filename = './models/cubez.stp'
+filename = './models/SPKcorrector.stp'
 
 _shapes = []
 
